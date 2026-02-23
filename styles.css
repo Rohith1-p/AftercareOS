@@ -41,15 +41,15 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-text);
-  /* Supermi-style gradient:
-     - Top-left: near-white
-     - Center: warm peach/coral pool
-     - Bottom-right: soft lavender-blue accent */
-  background:
-    radial-gradient(ellipse at 25% 55%, rgba(249, 182, 148, 0.85) 0%, transparent 52%),
-    radial-gradient(ellipse at 80% 90%, rgba(180, 190, 235, 0.55) 0%, transparent 42%),
-    radial-gradient(ellipse at 65% 45%, rgba(248, 155, 140, 0.45) 0%, transparent 40%),
-    #faf8f6;
+  /* Supermi-style: near-white top-left → warm peach center → soft lavender-pink bottom-right */
+  background: linear-gradient(135deg,
+      #fefefe 0%,
+      #fef9f6 15%,
+      #fde8d0 35%,
+      #fad0b8 52%,
+      #f6b0a8 70%,
+      #eba8c0 88%,
+      #d8a8d8 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
