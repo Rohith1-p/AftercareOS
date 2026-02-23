@@ -1,22 +1,22 @@
 /* ===== Variables ===== */
 :root {
-  --color-bg: #faf8f6;
-  /* Premium gradient: warm peachy-pink (top-left) → pale lavender (bottom-right) - visible but soft */
-  --color-gradient-start: #fef2eb;
-  --color-gradient-mid: #fce8ec;
-  --color-gradient-mid2: #f8e8f0;
-  --color-gradient-end: #f0e8f4;
+  --color-bg: #fdf8f5;
+  /* Premium gradient: warm cream (top-left) → soft peach (center) → vibrant coral-rose (bottom-right) */
+  --color-gradient-start: #fdf6f0;
+  --color-gradient-mid: #fde8d8;
+  --color-gradient-mid2: #f9c8b8;
+  --color-gradient-end: #f4a0a0;
   --color-dark: #1a1a1a;
   --color-dark-soft: #2d2d2d;
   --color-text: #333;
   --color-text-muted: #5c5c5c;
   --color-accent: #e85d2c;
   --color-accent-soft: #f07a4f;
-  --color-card: rgba(255, 255, 255, 0.85);
+  --color-card: rgba(255, 255, 255, 0.88);
   --color-card-border: rgba(0, 0, 0, 0.06);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
   --radius-pill: 9999px;
   --radius-card: 20px;
   --radius-btn: 12px;
@@ -39,12 +39,14 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-text);
-  /* Premium gradient: top-left peachy → bottom-right lavender, ethereal & muted */
-  background: linear-gradient(140deg,
-    var(--color-gradient-start) 0%,
-    var(--color-gradient-mid) 25%,
-    var(--color-gradient-mid2) 55%,
-    var(--color-gradient-end) 100%);
+  /* Premium warm gradient: cream top-left → peach center → vivid coral-rose bottom-right */
+  background: linear-gradient(135deg,
+    #fdf6f0 0%,
+    #fde8d8 20%,
+    #fbd0bc 40%,
+    #f8b8a8 60%,
+    #f49898 80%,
+    #ef8080 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
