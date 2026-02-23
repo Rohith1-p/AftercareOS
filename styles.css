@@ -24,7 +24,9 @@
 }
 
 /* ===== Reset & Base ===== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -39,14 +41,15 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-text);
-  /* Premium warm gradient: cream top-left → peach center → vivid coral-rose bottom-right */
-  background: linear-gradient(135deg,
-    #fdf6f0 0%,
-    #fde8d8 20%,
-    #fbd0bc 40%,
-    #f8b8a8 60%,
-    #f49898 80%,
-    #ef8080 100%);
+  /* Supermi-style gradient:
+     - Top-left: near-white
+     - Center: warm peach/coral pool
+     - Bottom-right: soft lavender-blue accent */
+  background:
+    radial-gradient(ellipse at 25% 55%, rgba(249, 182, 148, 0.85) 0%, transparent 52%),
+    radial-gradient(ellipse at 80% 90%, rgba(180, 190, 235, 0.55) 0%, transparent 42%),
+    radial-gradient(ellipse at 65% 45%, rgba(248, 155, 140, 0.45) 0%, transparent 40%),
+    #faf8f6;
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
@@ -58,9 +61,9 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
