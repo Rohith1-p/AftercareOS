@@ -679,9 +679,73 @@ body::before {
   margin-bottom: 32px;
 }
 
-.waitlist-form {
-  max-width: 560px;
+.waitlist-form,
+.kit-form-container {
+  max-width: 600px;
   margin: 0 auto 24px;
+  min-height: 200px;
+}
+
+.kit-form-container .formkit-form,
+.kit-form-container .formkit-fields,
+.kit-form-container .formkit-field {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.kit-form-container .formkit-input {
+  width: 100% !important;
+  min-width: 280px;
+  padding: 16px 20px !important;
+  box-sizing: border-box;
+  font-family: var(--font) !important;
+  font-size: 1rem !important;
+  color: var(--color-dark) !important;
+  background: white !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.kit-form-container .formkit-input::placeholder {
+  color: #999;
+}
+
+.kit-form-container .formkit-input:focus {
+  outline: none !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px rgba(232, 93, 44, 0.15);
+}
+
+.kit-form-container .formkit-field {
+  margin-bottom: 14px !important;
+}
+
+/* Kit form submit button - larger, premium style */
+.kit-form-container .formkit-submit {
+  margin-top: 24px !important;
+  width: 100% !important;
+  padding: 18px 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  font-family: var(--font) !important;
+  background: var(--color-accent) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(232, 93, 44, 0.35);
+}
+
+.kit-form-container .formkit-submit:hover {
+  background: var(--color-accent-soft) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(232, 93, 44, 0.4);
+}
+
+.kit-form-container .formkit-submit:active {
+  transform: translateY(0);
 }
 
 .form-row {
