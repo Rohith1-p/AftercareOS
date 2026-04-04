@@ -1,6 +1,6 @@
-# Easy Aftercare Landing Page
+# AftercareOS Landing Page
 
-A validation landing page for the Easy Aftercare messaging platform, targeting medical aesthetics, med spas, and tattoo/PMU studios.
+A validation landing page for the AftercareOS messaging platform, targeting medical aesthetics, med spas, and tattoo/PMU studios.
 
 ## Quick Start
 
