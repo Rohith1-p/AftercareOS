@@ -696,39 +696,25 @@ body::before {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-card-border);
+  scroll-margin-top: 100px;
 }
 
 .waitlist-audience,
-.waitlist-benefits ul {
-  list-style: none;
-  max-width: 480px;
-  margin: 0 auto 24px;
-}
-
-.waitlist-audience li,
-.waitlist-benefits li {
-  padding: 8px 0;
-  padding-left: 24px;
-  position: relative;
-}
-
-.waitlist-audience li::before,
-.waitlist-benefits li::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
-.waitlist-benefits h4 {
-  font-size: 1rem;
-  margin-bottom: 12px;
+.waitlist-benefits p {
+  text-align: center;
+  font-size: 1.05rem;
   color: var(--color-dark);
+  max-width: 600px;
+  margin: 0 auto 12px;
+}
+
+.waitlist-benefits {
+  margin-bottom: 32px;
 }
 
 .waitlist-cta {
-  font-size: 1.05rem;
+  font-weight: 600;
+  font-size: 1.1rem;
   margin-bottom: 8px;
   text-align: center;
 }
