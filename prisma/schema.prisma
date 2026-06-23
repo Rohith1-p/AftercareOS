@@ -1,0 +1,328 @@
+// AftercareOS — Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Identity & tenancy ───────────────────────────────
+model Organization {
+  id             String   @id @default(cuid())
+  name           String
+  plan           Plan     @default(STARTER)
+  status         OrgStatus @default(TRIAL)
+  stripeCustomerId String? @unique
+  trialEndsAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  users          User[]
+  clinicProfile  ClinicProfile?
+  protocols      Protocol[]
+  patients       Patient[]
+  serviceMappings ServiceMapping[]
+  integrations   Integration[]
+  alerts         Alert[]
+  conversations  Conversation[]
+  reviewRequests ReviewRequest[]
+}
+
+enum Plan {
+  STARTER
+  PROFESSIONAL
+  GROWTH
+  ENTERPRISE
+}
+
+enum OrgStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  email     String   @unique
+  name      String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+
+  alertsResolved Alert[] @relation("AlertResolver")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  STAFF
+}
+
+model ClinicProfile {
+  id              String   @id @default(cuid())
+  orgId           String   @unique
+  org             Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  logoUrl         String?
+  brandColor      String   @default("#e85d2c")
+  senderName      String?
+  twilioNumber    String?
+  replyToPhone    String?
+  bookingUrl      String?
+  reviewLink      String?
+  quietHoursStart String?
+  quietHoursEnd   String?
+  consentText     String?
+  language        String   @default("en")
+  updatedAt       DateTime @updatedAt
+}
+
+// ── Protocols & journeys ─────────────────────────────
+model Protocol {
+  id        String   @id @default(cuid())
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  name      String
+  category  String
+  segment   String?
+  source    ProtocolSource @default(TEMPLATE)
+  status    ProtocolStatus @default(DRAFT)
+  tone      String   @default("friendly-medspa")
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  steps           ProtocolStep[]
+  serviceMappings ServiceMapping[]
+  enrollments     Enrollment[]
+
+  @@index([orgId])
+}
+
+enum ProtocolSource {
+  TEMPLATE
+  AI_IMPORTED
+  CUSTOM
+}
+
+enum ProtocolStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model ProtocolStep {
+  id               String   @id @default(cuid())
+  protocolId       String
+  protocol         Protocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  order            Int
+  offsetMinutes    Int
+  label            String
+  body             String
+  includeEscalation Boolean @default(false)
+  includeReviewAsk Boolean  @default(false)
+  includeRebook    Boolean  @default(false)
+  mediaUrl         String?
+
+  scheduledMessages ScheduledMessage[]
+
+  @@index([protocolId])
+}
+
+model ServiceMapping {
+  id                String   @id @default(cuid())
+  orgId             String
+  org               Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  provider          String
+  externalServiceId String
+  externalLabel     String
+  protocolId        String
+  protocol          Protocol @relation(fields: [protocolId], references: [id], onDelete: Cascade)
+  autoEnroll        Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  @@unique([orgId, provider, externalServiceId])
+}
+
+// ── Patients & enrollments ───────────────────────────
+model Patient {
+  id        String   @id @default(cuid())
+  orgId     String
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  phone     String
+  name      String
+  email     String?
+  consentAt DateTime?
+  source    String   @default("manual")
+  createdAt DateTime @default(now())
+
+  enrollments   Enrollment[]
+  conversations Conversation[]
+  alerts        Alert[]
+
+  @@unique([orgId, phone])
+  @@index([orgId])
+}
+
+model Enrollment {
+  id               String   @id @default(cuid())
+  patientId        String
+  patient          Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  protocolId       String
+  protocol         Protocol @relation(fields: [protocolId], references: [id])
+  orgId            String
+  procedureLabel   String?
+  appointmentAt    DateTime
+  status           EnrollmentStatus @default(ACTIVE)
+  currentOffsetMin Int      @default(0)
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+
+  scheduledMessages ScheduledMessage[]
+  messageLogs       MessageLog[]
+  alerts            Alert[]
+  reviewRequests    ReviewRequest[]
+
+  @@index([patientId])
+  @@index([orgId])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELED
+}
+
+model ScheduledMessage {
+  id             String   @id @default(cuid())
+  enrollmentId   String
+  enrollment     Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  protocolStepId String
+  protocolStep   ProtocolStep @relation(fields: [protocolStepId], references: [id])
+  sendAt         DateTime
+  status         ScheduledStatus @default(PENDING)
+  attempts       Int      @default(0)
+  twilioSid      String?
+  sentAt         DateTime?
+  error          String?
+
+  @@index([sendAt, status])
+  @@index([enrollmentId])
+}
+
+enum ScheduledStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+model MessageLog {
+  id           String   @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  direction    MessageDirection
+  body         String
+  fromNumber   String?
+  toNumber     String?
+  twilioSid    String?
+  sentAt       DateTime @default(now())
+  status       String?
+
+  @@index([enrollmentId])
+}
+
+enum MessageDirection {
+  OUTBOUND
+  INBOUND
+}
+
+// ── Conversations (inbox) ────────────────────────────
+model Conversation {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  orgId         String
+  org           Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  lastInboundAt DateTime?
+  unreadCount   Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([orgId, patientId])
+}
+
+// ── Alerts / escalation ──────────────────────────────
+model Alert {
+  id           String   @id @default(cuid())
+  enrollmentId String?
+  enrollment   Enrollment? @relation(fields: [enrollmentId], references: [id])
+  patientId    String?
+  patient      Patient?  @relation(fields: [patientId], references: [id])
+  orgId        String
+  org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  severity     Severity @default(MEDIUM)
+  category     String   @default("concern")
+  message      String
+  photoUrl     String?
+  status       AlertStatus @default(OPEN)
+  note         String?
+  resolvedAt   DateTime?
+  resolvedById String?
+  resolvedBy   User?    @relation("AlertResolver", fields: [resolvedById], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@index([orgId, status])
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum AlertStatus {
+  OPEN
+  REVIEWED
+  RESPONDED
+  BOOKED
+  ESCALATED_MD
+  RESOLVED
+}
+
+// ── Reviews & rebooking ──────────────────────────────
+model ReviewRequest {
+  id           String   @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  orgId        String
+  org          Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  platform     String   @default("google")
+  sentAt       DateTime @default(now())
+  clickedAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  @@index([orgId])
+}
+
+// ── Integrations ─────────────────────────────────────
+model Integration {
+  id                 String   @id @default(cuid())
+  orgId              String
+  org                Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  provider           String
+  externalMerchantId String?
+  accessToken        String?
+  refreshToken       String?
+  status             String   @default("connected")
+  connectedAt        DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([orgId, provider])
+}

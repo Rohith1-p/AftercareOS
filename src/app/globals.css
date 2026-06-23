@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #fdf8f5;
+  --color-dark: #1a1a1a;
+  --color-dark-soft: #2d2d2d;
+  --color-text: #333333;
+  --color-text-muted: #5c5c5c;
+  --color-accent: #e85d2c;
+  --color-accent-soft: #f07a4f;
+  --color-card: rgba(255, 255, 255, 0.88);
+  --color-card-border: rgba(0, 0, 0, 0.06);
+  --color-success: #22c55e;
+  --color-star: #ffb400;
+  --color-danger: #dc2626;
+  --color-warn: #f59e0b;
+  --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  border-color: var(--color-card-border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    #fefefe 0%,
+    #fef9f6 15%,
+    #fde8d0 35%,
+    #fad0b8 52%,
+    #f6b0a8 70%,
+    #eba8c0 88%,
+    #d8a8d8 100%
+  );
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Subtle premium grid texture (from landing page) */
+.app-texture::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glassmorphism surface */
+.glass {
+  background: var(--color-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-card-border);
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
