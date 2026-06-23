@@ -5,6 +5,8 @@ import { getLiveStore } from "@/lib/data/store";
 import { getClinicProfile } from "@/lib/data";
 import { sendSms } from "@/lib/twilio";
 import { renderTemplate } from "@/lib/messaging/tokens";
+import { isSupabaseConfigured, supabaseAdmin } from "@/lib/supabase-server";
+import { escalationLinkFor as repoEscalationLinkFor } from "@/lib/data/supabase-repo";
 import { nanoid } from "nanoid";
 
 export interface SendReport {
@@ -39,6 +41,7 @@ function withEscalationCta(body: string, link: string): string {
 }
 
 export async function processDueMessages(now = new Date()): Promise<SendReport> {
+  if (isSupabaseConfigured) return processDueSupabase(now);
   const store = getLiveStore();
   const clinic = await getClinicProfile();
   const report: SendReport = { processed: 0, sent: 0, failed: 0, details: [] };
@@ -126,5 +129,46 @@ export async function processDueMessages(now = new Date()): Promise<SendReport> 
     }
   }
 
+  return report;
+}
+
+// ── Supabase-backed scheduler ────────────────────────
+async function processDueSupabase(now: Date): Promise<SendReport> {
+  const report: SendReport = { processed: 0, sent: 0, failed: 0, details: [] };
+  const clinic = await getClinicProfile();
+  const { data: dueRows } = await supabaseAdmin!
+    .from("ScheduledMessage").select("*")
+    .eq("status", "PENDING").lte("sendAt", now.toISOString());
+  for (const sm of dueRows || []) {
+    report.processed += 1;
+    const { data: enrollment } = await supabaseAdmin!.from("Enrollment").select("*").eq("id", sm.enrollmentId).maybeSingle();
+    const { data: patient } = enrollment ? await supabaseAdmin!.from("Patient").select("*").eq("id", enrollment.patientId).maybeSingle() : { data: null };
+    const { data: step } = await supabaseAdmin!.from("ProtocolStep").select("*").eq("id", sm.protocolStepId).maybeSingle();
+    if (!enrollment || !patient || !step) {
+      await supabaseAdmin!.from("ScheduledMessage").update({ status: "FAILED", error: "missing refs", attempts: (sm.attempts ?? 0) + 1 }).eq("id", sm.id);
+      report.failed += 1; continue;
+    }
+    let body = renderTemplate(step.body, {
+      first_name: patient.name.split(" ")[0], clinic_name: clinic.name,
+      procedure: enrollment.procedureLabel ?? "", book_link: clinic.bookingUrl,
+      review_link: clinic.reviewLink, reply_to: clinic.twilioNumber,
+    });
+    if (step.includeEscalation) body = withEscalationCta(body, repoEscalationLinkFor(enrollment.id));
+    try {
+      const res = await sendSms(patient.phone, body, { from: clinic.twilioNumber });
+      await supabaseAdmin!.from("MessageLog").insert({
+        id: `m_${nanoid(8)}`, enrollmentId: enrollment.id, direction: "OUTBOUND", body,
+        fromNumber: clinic.twilioNumber, toNumber: patient.phone, twilioSid: res.sid, status: res.status,
+      });
+      if (step.includeReviewAsk) {
+        await supabaseAdmin!.from("ReviewRequest").insert({ id: `rr_${nanoid(10)}`, enrollmentId: enrollment.id, orgId: enrollment.orgId, platform: "google" });
+      }
+      await supabaseAdmin!.from("ScheduledMessage").update({ status: "SENT", twilioSid: res.sid, sentAt: new Date().toISOString(), attempts: (sm.attempts ?? 0) + 1 }).eq("id", sm.id);
+      report.sent += 1;
+    } catch (e) {
+      await supabaseAdmin!.from("ScheduledMessage").update({ status: "FAILED", error: String(e).slice(0, 200), attempts: (sm.attempts ?? 0) + 1 }).eq("id", sm.id);
+      report.failed += 1;
+    }
+  }
   return report;
 }

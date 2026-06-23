@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { parseProtocolFromText, type ParsedProtocol, type ParsedStep } from "@/lib/ai/protocol-parser";
 import { getLiveStore } from "@/lib/data/store";
+import { isSupabaseConfigured } from "@/lib/supabase-server";
+import * as repo from "@/lib/data/supabase-repo";
 import { nanoid } from "nanoid";
 import type { Protocol, ProtocolStep } from "@/lib/data/types";
 
@@ -23,6 +25,15 @@ export interface SaveProtocolInput {
 }
 
 export async function saveProtocolAction(input: SaveProtocolInput): Promise<{ id: string }> {
+  if (isSupabaseConfigured) {
+    const { id } = await repo.saveProtocol({
+      id: input.id, name: input.name, category: input.category, tone: input.tone,
+      steps: input.steps.map((s) => ({ offsetMinutes: s.offsetMinutes, label: s.label, body: s.body, includeEscalation: s.includeEscalation })),
+    });
+    revalidatePath("/dashboard/journeys");
+    revalidatePath(`/dashboard/journeys/${id}`);
+    return { id };
+  }
   const store = getLiveStore();
   const id = input.id ?? `proto_${nanoid(10)}`;
   const now = new Date().toISOString();

@@ -8,6 +8,8 @@ import { sendSms } from "@/lib/twilio";
 import type { AlertStatus } from "@/lib/data/types";
 import { QUICK_REPLIES } from "@/lib/quick-replies";
 import { logAudit } from "@/lib/audit";
+import { isSupabaseConfigured } from "@/lib/supabase-server";
+import * as repo from "@/lib/data/supabase-repo";
 
 export { QUICK_REPLIES };
 
@@ -16,6 +18,13 @@ export async function resolveAlertAction(
   status: AlertStatus,
   note?: string,
 ): Promise<void> {
+  if (isSupabaseConfigured) {
+    await repo.resolveAlert(alertId, status, note);
+    logAudit("alert.resolve", { actor: "owner", target: alertId, detail: `${status}${note ? `: ${note}` : ""}` });
+    revalidatePath("/dashboard/inbox");
+    revalidatePath("/dashboard");
+    return;
+  }
   const store = getLiveStore();
   const alert = store.alerts.find((a) => a.id === alertId);
   if (!alert) throw new Error("Alert not found");
@@ -30,6 +39,11 @@ export async function resolveAlertAction(
 }
 
 export async function replyAction(conversationId: string, body: string): Promise<void> {
+  if (isSupabaseConfigured) {
+    await repo.reply(conversationId, body);
+    revalidatePath("/dashboard/inbox");
+    return;
+  }
   const store = getLiveStore();
   const conv = store.conversations.find((c) => c.id === conversationId);
   if (!conv) throw new Error("Conversation not found");

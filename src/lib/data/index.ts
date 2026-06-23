@@ -1,70 +1,67 @@
 import { hasDatabase } from "@/lib/db";
+import { isSupabaseConfigured, supabaseAdmin } from "@/lib/supabase-server";
 import { getLiveStore } from "./store";
 import { SEED_PROTOCOLS } from "./seed";
+import * as repo from "./supabase-repo";
 import type {
-  Protocol,
-  Patient,
-  Enrollment,
-  Alert,
-  Conversation,
-  ReviewRequest,
-  Integration,
-  ClinicProfile,
-  Organization,
-  ScheduledMessage,
+  Protocol, Patient, Enrollment, Alert, Conversation, ReviewRequest,
+  Integration, ClinicProfile, Organization, ScheduledMessage, ServiceMapping,
 } from "./types";
 
-// Facade. In MOCK_DATA mode (no DATABASE_URL) everything reads from the
-// in-memory store. When a DB is wired, each function switches to Prisma.
-const MOCK = !hasDatabase();
+// Supabase mode is active when the secret key is configured. Otherwise the
+// in-memory mock store powers the UI (used by tests + offline dev).
+const SB = isSupabaseConfigured;
 
-export const isMockMode = MOCK;
+export const isMockMode = !SB;
 
 export async function getOrg(): Promise<Organization> {
-  return getLiveStore().org;
+  return SB ? repo.getOrg() : getLiveStore().org;
 }
 
 export async function getClinicProfile(): Promise<ClinicProfile> {
-  return getLiveStore().clinic;
+  return SB ? repo.getClinicProfile() : getLiveStore().clinic;
 }
 
 export async function getProtocols(): Promise<Protocol[]> {
-  return getLiveStore().protocols;
+  return SB ? repo.getProtocols() : getLiveStore().protocols;
 }
 
 export async function getProtocol(id: string): Promise<Protocol | undefined> {
-  return getLiveStore().protocols.find((p) => p.id === id);
+  return SB ? repo.getProtocol(id) : getLiveStore().protocols.find((p) => p.id === id);
 }
 
 export async function getPatients(): Promise<Patient[]> {
-  return getLiveStore().patients;
+  return SB ? repo.getPatients() : getLiveStore().patients;
 }
 
 export async function getEnrollments(): Promise<Enrollment[]> {
-  return getLiveStore().enrollments;
+  return SB ? repo.getEnrollments() : getLiveStore().enrollments;
 }
 
 export async function getScheduled(): Promise<ScheduledMessage[]> {
-  return getLiveStore().scheduled;
+  return SB ? repo.getScheduled() : getLiveStore().scheduled;
 }
 
 export async function getAlerts(): Promise<Alert[]> {
-  return getLiveStore().alerts;
+  return SB ? repo.getAlerts() : getLiveStore().alerts;
 }
 
 export async function getConversations(): Promise<Conversation[]> {
-  return getLiveStore().conversations;
+  return SB ? repo.getConversations() : getLiveStore().conversations;
 }
 
 export async function getReviewRequests(): Promise<ReviewRequest[]> {
-  return getLiveStore().reviewRequests;
+  return SB ? repo.getReviewRequests() : getLiveStore().reviewRequests;
 }
 
 export async function getIntegrations(): Promise<Integration[]> {
-  return getLiveStore().integrations;
+  return SB ? repo.getIntegrations() : getLiveStore().integrations;
 }
 
-// ── Derived/aggregate helpers (used by Home + Analytics) ──
+export async function getServiceMappings(): Promise<ServiceMapping[]> {
+  return SB ? repo.getServiceMappings() : getLiveStore().serviceMappings ?? [];
+}
+
 export function dayBucketLabel(offsetMinutes: number): string {
   const d = Math.floor(offsetMinutes / 1440);
   if (d <= 0) return "Day 0";
@@ -82,7 +79,7 @@ export interface HomeSnapshot {
 }
 
 export async function getHomeSnapshot(): Promise<HomeSnapshot> {
-  const { enrollments, alerts } = getLiveStore();
+  const [enrollments, alerts] = await Promise.all([getEnrollments(), getAlerts()]);
   const active = enrollments.filter((e) => e.status === "ACTIVE");
   const buckets = new Map<string, number>();
   for (const e of active) {
@@ -93,9 +90,7 @@ export async function getHomeSnapshot(): Promise<HomeSnapshot> {
   const byDay = ordered
     .map((label) => ({ label, count: buckets.get(label) ?? 0 }))
     .concat(
-      [...buckets.keys()]
-        .filter((k) => !ordered.includes(k))
-        .map((label) => ({ label, count: buckets.get(label) ?? 0 })),
+      [...buckets.keys()].filter((k) => !ordered.includes(k)).map((label) => ({ label, count: buckets.get(label) ?? 0 })),
     );
   const open = alerts.filter((a) => a.status === "OPEN");
   return {
@@ -103,11 +98,12 @@ export async function getHomeSnapshot(): Promise<HomeSnapshot> {
     byDay,
     openAlerts: open.length,
     urgentAlerts: open.filter((a) => a.severity === "URGENT" || a.severity === "HIGH").length,
-    messagesSentToday: 42,
-    messagesSent7d: 268,
-    reviewRequests7d: 11,
+    messagesSentToday: SB ? 0 : 42,
+    messagesSent7d: SB ? 0 : 268,
+    reviewRequests7d: SB ? 0 : 11,
   };
 }
 
 export { SEED_PROTOCOLS };
+export { hasDatabase, supabaseAdmin };
 export { getMockStore, getLiveStore } from "./store";

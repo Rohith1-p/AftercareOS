@@ -5,8 +5,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // App queries use Supabase's pooled connection (Transaction pooler, port 6543).
+  url       = env("DATABASE_URL")
+  // Migrations use the direct connection (Session pooler, port 5432) — required
+  // by Prisma because pgbouncer doesn't support prepared-statement DDL.
+  directUrl = env("DIRECT_URL")
 }
 
 // ── Identity & tenancy ───────────────────────────────

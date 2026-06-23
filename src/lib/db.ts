@@ -4,15 +4,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Only instantiate when a real DATABASE_URL is configured.
-export const prisma =
-  process.env.DATABASE_URL || process.env.SUPABASE_URL
-    ? (globalForPrisma.prisma ??
+// Only instantiate when a real Postgres connection string is configured.
+// NOTE: this must key off DATABASE_URL (the Postgres DSN), NOT SUPABASE_URL
+// (the REST/Auth URL) — otherwise Prisma would instantiate without a valid url.
+export const prisma = process.env.DATABASE_URL
+  ? (globalForPrisma.prisma ??
       new PrismaClient({
         log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
       }))
-    : undefined;
+  : undefined;
 
 export function hasDatabase(): boolean {
-  return Boolean(process.env.DATABASE_URL || process.env.SUPABASE_URL);
+  return Boolean(process.env.DATABASE_URL);
 }

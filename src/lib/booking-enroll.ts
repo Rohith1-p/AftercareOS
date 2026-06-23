@@ -8,6 +8,8 @@ import { sendSms } from "@/lib/twilio";
 import { enrollmentEscalationTokens, reviewTokens, reviewLinkFor } from "@/lib/scheduler";
 import { escalationTokens } from "@/lib/escalation-registry";
 import { toE164 } from "@/lib/utils";
+import { isSupabaseConfigured } from "@/lib/supabase-server";
+import * as repo from "@/lib/data/supabase-repo";
 
 export interface BookingInput {
   name: string;
@@ -20,6 +22,19 @@ export interface BookingInput {
 export async function autoEnrollFromBooking(
   input: BookingInput,
 ): Promise<{ enrollmentId: string; patientId: string; protocolId: string; matched: boolean }> {
+  if (isSupabaseConfigured) {
+    const mappings = await repo.getServiceMappings();
+    const mapping = mappings.find((m) => m.provider === "square" && m.externalServiceId === input.serviceId);
+    const protocols = await repo.getProtocols();
+    const protocol = (mapping ? protocols.find((p) => p.id === mapping.protocolId) : undefined) ?? protocols.find((p) => p.id === guessProtocol(input.serviceName, protocols)) ?? protocols[0];
+    if (!protocol) throw new Error("No protocol available");
+    const res = await repo.enrollPatient({
+      name: input.name, phone: input.phone, protocolId: protocol.id,
+      appointmentAt: input.completedAt ?? new Date().toISOString(),
+      procedureLabel: input.serviceName, sendNow: true,
+    });
+    return { ...res, protocolId: protocol.id, matched: Boolean(mapping) };
+  }
   const store = getLiveStore();
   const clinic = await getClinicProfile();
   const phone = toE164(input.phone);

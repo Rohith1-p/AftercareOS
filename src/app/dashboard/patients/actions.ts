@@ -9,6 +9,8 @@ import { sendSms } from "@/lib/twilio";
 import { enrollmentEscalationTokens, reviewTokens, reviewLinkFor } from "@/lib/scheduler";
 import { escalationTokens } from "@/lib/escalation-registry";
 import { logAudit } from "@/lib/audit";
+import { isSupabaseConfigured } from "@/lib/supabase-server";
+import * as repo from "@/lib/data/supabase-repo";
 import { toE164 } from "@/lib/utils";
 
 export interface EnrollInput {
@@ -22,6 +24,13 @@ export interface EnrollInput {
 }
 
 export async function enrollPatientAction(input: EnrollInput): Promise<{ enrollmentId: string; patientId: string }> {
+  if (isSupabaseConfigured) {
+    const res = await repo.enrollPatient({ ...input, phone: toE164(input.phone) });
+    logAudit("enroll.create", { actor: "owner", target: res.enrollmentId });
+    revalidatePath("/dashboard/patients");
+    revalidatePath("/dashboard");
+    return res;
+  }
   const store = getLiveStore();
   const clinic = await getClinicProfile();
   const protocol = store.protocols.find((p) => p.id === input.protocolId);
@@ -116,6 +125,13 @@ export async function submitEscalationAction(input: {
   severity: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   photoUrl?: string;
 }): Promise<{ ok: true }> {
+  if (isSupabaseConfigured) {
+    await repo.submitEscalation(input);
+    logAudit("alert.create", { actor: "patient", detail: `${input.severity}: ${input.message.slice(0, 40)}` });
+    revalidatePath("/dashboard/inbox");
+    revalidatePath("/dashboard");
+    return { ok: true };
+  }
   const store = getLiveStore();
   let mapping = escalationTokens.get(input.token);
   // Demo fallback: if the token isn't registered (e.g. a seeded link), attach

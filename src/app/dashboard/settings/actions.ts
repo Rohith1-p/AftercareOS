@@ -5,6 +5,8 @@ import { nanoid } from "nanoid";
 import { getLiveStore } from "@/lib/data/store";
 import { autoEnrollFromBooking } from "@/lib/booking-enroll";
 import { logAudit } from "@/lib/audit";
+import { isSupabaseConfigured } from "@/lib/supabase-server";
+import * as repo from "@/lib/data/supabase-repo";
 
 export async function saveServiceMappingAction(
   serviceId: string,
@@ -12,6 +14,11 @@ export async function saveServiceMappingAction(
   protocolId: string,
   autoEnroll: boolean,
 ): Promise<void> {
+  if (isSupabaseConfigured) {
+    await repo.saveServiceMapping(serviceId, label, protocolId, autoEnroll);
+    revalidatePath("/dashboard/settings");
+    return;
+  }
   const store = getLiveStore();
   const existing = store.serviceMappings.find(
     (m) => m.provider === "square" && m.externalServiceId === serviceId,
@@ -68,6 +75,13 @@ export async function saveClinicProfileAction(input: {
   quietHoursEnd: string;
   consentText: string;
 }): Promise<void> {
+  if (isSupabaseConfigured) {
+    await repo.saveClinicProfile(input);
+    logAudit("clinic.update", { actor: "owner", detail: input.name });
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/settings");
+    return;
+  }
   const store = getLiveStore();
   Object.assign(store.clinic, input);
   revalidatePath("/dashboard");
