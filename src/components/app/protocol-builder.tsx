@@ -46,14 +46,25 @@ export function ProtocolBuilder({ initial, id }: { initial?: ParsedProtocol; id?
   const [parsing, startParsing] = useTransition();
   const [saving, startSaving] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [useAi, setUseAi] = useState(false); // default = instant heuristic; AI is opt-in
+  const [elapsed, setElapsed] = useState(0);
   const ai = isAiAvailable();
 
   function handleParse() {
     setError(null);
+    setElapsed(0);
+    const startedAt = Date.now();
+    const timer = useAi ? setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 500) : null;
     startParsing(async () => {
-      const result = await parseProtocolAction(text || SAMPLE, tone);
-      setProto(result);
-      setStage("edit");
+      try {
+        const result = await parseProtocolAction(text || SAMPLE, tone, useAi);
+        setProto(result);
+        setStage("edit");
+      } catch (e) {
+        setError(useAi ? "AI generation failed — try Quick mode." : String(e));
+      } finally {
+        if (timer) clearInterval(timer);
+      }
     });
   }
 
@@ -147,18 +158,37 @@ export function ProtocolBuilder({ initial, id }: { initial?: ParsedProtocol; id?
               className="font-mono text-xs"
             />
 
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-xs text-muted">
-                {ai ? (
-                  <span className="inline-flex items-center gap-1 text-success"><Sparkles className="h-3.5 w-3.5" /> AI (GPT-4o) ready</span>
-                ) : (
-                  <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5" /> Smart parser (add OPENAI_API_KEY for AI)</span>
-                )}
-              </p>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-muted">Mode:</span>
+                <button
+                  type="button"
+                  onClick={() => setUseAi(false)}
+                  className={`rounded-pill px-3 py-1.5 text-xs font-bold transition ${!useAi ? "bg-brand text-white" : "bg-black/5 text-ink hover:bg-black/10"}`}
+                >
+                  ⚡ Quick (instant)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUseAi(true)}
+                  disabled={!ai}
+                  className={`rounded-pill px-3 py-1.5 text-xs font-bold transition ${useAi ? "bg-brand text-white" : "bg-black/5 text-ink hover:bg-black/10"} ${!ai ? "opacity-40" : ""}`}
+                  title={ai ? "Uses GLM (a reasoning model — takes ~30–60s)" : "No AI key configured"}
+                >
+                  🤖 AI {ai ? "(~1 min)" : "(off)"}
+                </button>
+              </div>
               <Button onClick={handleParse} disabled={parsing}>
-                {parsing ? "Generating…" : <><Sparkles className="h-4 w-4" /> Generate journey</>}
+                {parsing
+                  ? useAi ? `AI writing… ${elapsed}s` : "Generating…"
+                  : <><Sparkles className="h-4 w-4" /> Generate journey</>}
               </Button>
             </div>
+            {parsing && useAi && (
+              <p className="mt-2 text-xs text-muted">
+                GLM is a reasoning model and can take up to a minute. Hang tight — it&apos;s worth it.
+              </p>
+            )}
             {error && <p className="mt-3 text-sm font-medium text-danger">{error}</p>}
           </Card>
         ) : (

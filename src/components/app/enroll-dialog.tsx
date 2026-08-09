@@ -32,8 +32,17 @@ export function EnrollDialog({
   const [when, setWhen] = useState("now");
   const [sendNow, setSendNow] = useState(true);
 
-  const appointmentAt =
-    when === "now" ? new Date().toISOString() : new Date(when).toISOString();
+  function resolveAppointmentAt(w: string): string {
+    const now = Date.now();
+    switch (w) {
+      case "1h": return new Date(now - 60 * 60 * 1000).toISOString();
+      case "today": return new Date(now - 6 * 60 * 60 * 1000).toISOString();
+      case "yesterday": return new Date(now - 24 * 60 * 60 * 1000).toISOString();
+      case "now":
+      default: return new Date().toISOString();
+    }
+  }
+  const appointmentAt = resolveAppointmentAt(when);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

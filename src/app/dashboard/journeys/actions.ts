@@ -11,8 +11,9 @@ import type { Protocol, ProtocolStep } from "@/lib/data/types";
 export async function parseProtocolAction(
   text: string,
   tone: string,
+  useAi = true,
 ): Promise<ParsedProtocol> {
-  return parseProtocolFromText(text, { tone });
+  return parseProtocolFromText(text, { tone, useAi });
 }
 
 export interface SaveProtocolInput {

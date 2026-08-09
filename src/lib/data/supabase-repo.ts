@@ -127,8 +127,12 @@ export async function enrollPatient(input: {
   patientId?: string; name?: string; phone: string; protocolId: string;
   appointmentAt: string; procedureLabel?: string; sendNow?: boolean;
 }): Promise<{ enrollmentId: string; patientId: string }> {
-  const clinic = await getClinicProfile();
-  const { data: protoRow } = await supabaseAdmin!.from("Protocol").select("*, ProtocolStep(*)").eq("id", input.protocolId).single();
+  // Parallelize independent reads (clinic profile + protocol) to cut latency.
+  const [clinic, protoRes] = await Promise.all([
+    getClinicProfile(),
+    supabaseAdmin!.from("Protocol").select("*, ProtocolStep(*)").eq("id", input.protocolId).single(),
+  ]);
+  const protoRow = protoRes.data;
   if (!protoRow) throw new Error("Protocol not found");
   const protocol = mapProtocol(protoRow as Record<string, unknown>);
 
