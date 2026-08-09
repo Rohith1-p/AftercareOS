@@ -28,3 +28,9 @@ next-env.d.ts
 
 # screenshots (generated)
 /screenshots
+
+# prospect lists — contain third-party emails/phones. Regenerable; never commit.
+docs/outreach/*.csv
+
+# archived v1 landing page (has its own .git)
+docs/landing-page-v1/
