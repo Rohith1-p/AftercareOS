@@ -14,12 +14,20 @@ const ORG_ID = "org_demo_aesthetics";
 
 // ── READS ────────────────────────────────────────────
 export async function getOrg(): Promise<Organization> {
-  const { data } = await supabaseAdmin!.from("Organization").select("*").eq("id", ORG_ID).single();
+  const { data, error } = await supabaseAdmin!.from("Organization").select("*").eq("id", ORG_ID).single();
+  if (error || !data) {
+    throw new Error(`Organization "${ORG_ID}" not found: ${error?.message ?? "no row"}`);
+  }
   return data as Organization;
 }
 
 export async function getClinicProfile(): Promise<ClinicProfile> {
-  const { data } = await supabaseAdmin!.from("ClinicProfile").select("*").eq("orgId", ORG_ID).single();
+  const { data, error } = await supabaseAdmin!.from("ClinicProfile").select("*").eq("orgId", ORG_ID).single();
+  // Previously the error was discarded and `data.orgId` dereferenced, so any
+  // miss surfaced as "Cannot read properties of null" with no clue why.
+  if (error || !data) {
+    throw new Error(`ClinicProfile for org "${ORG_ID}" not found: ${error?.message ?? "no row"}`);
+  }
   return {
     orgId: data.orgId, name: data.senderName || "AftercareOS",
     brandColor: data.brandColor, senderName: data.senderName,
@@ -113,14 +121,28 @@ export async function getServiceMappings(): Promise<ServiceMapping[]> {
 }
 
 // ── WRITES ───────────────────────────────────────────
-const escTokens = new Map<string, { enrollmentId: string; patientId: string }>();
-const enrTokens = new Map<string, string>();
 
-export function escalationLinkFor(enrollmentId: string): string {
-  const token = enrTokens.get(enrollmentId);
-  if (!token) return "";
-  const base = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
-  return `${base}/w/${token}`;
+export function appBaseUrl(): string {
+  return (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
+}
+
+/**
+ * Resolve a public link token back to its enrollment.
+ *
+ * This is a database lookup rather than an in-process Map because the only
+ * caller is a public page hit by a patient's phone — which lands on whichever
+ * serverless instance the platform picks, not the one that created the token.
+ */
+export async function getEnrollmentByToken(
+  token: string,
+): Promise<{ id: string; patientId: string; orgId: string } | null> {
+  if (!token) return null;
+  const { data } = await supabaseAdmin!
+    .from("Enrollment")
+    .select("id,patientId,orgId")
+    .eq("escalationToken", token)
+    .maybeSingle();
+  return (data as { id: string; patientId: string; orgId: string } | null) ?? null;
 }
 
 export async function enrollPatient(input: {
@@ -154,25 +176,24 @@ export async function enrollPatient(input: {
     ctx: {
       first_name: patient.name.split(" ")[0], clinic_name: clinic.name,
       procedure: input.procedureLabel ?? protocol.name, book_link: clinic.bookingUrl,
-      review_link: clinic.reviewLink, reply_to: clinic.twilioNumber,
+      // Tracked redirect, not the bare Google URL — that's what makes review
+      // clicks measurable. Resolves via Enrollment.escalationToken.
+      review_link: `${appBaseUrl()}/r/${token}`, reply_to: clinic.twilioNumber,
     },
     quiet: { start: clinic.quietHoursStart, end: clinic.quietHoursEnd },
-    escalation: { baseUrl: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000", token },
+    escalation: { baseUrl: appBaseUrl(), token },
   });
 
   await supabaseAdmin!.from("Enrollment").insert({
     id: enrollmentId, patientId: patient.id, protocolId: protocol.id, orgId: ORG_ID,
     procedureLabel: input.procedureLabel, appointmentAt: appointmentAt.toISOString(),
-    status: "ACTIVE", currentOffsetMin: 0,
+    status: "ACTIVE", currentOffsetMin: 0, escalationToken: token,
   });
   const scheduledRows = plan.map((m) => ({
     id: `sm_${nanoid(10)}`, enrollmentId, protocolStepId: m.step.id,
     sendAt: m.sendAt.toISOString(), status: "PENDING", attempts: 0,
   }));
   await supabaseAdmin!.from("ScheduledMessage").insert(scheduledRows);
-
-  escTokens.set(token, { enrollmentId, patientId: patient.id });
-  enrTokens.set(enrollmentId, token);
 
   if (input.sendNow) {
     const first = plan[0];
@@ -200,12 +221,18 @@ async function createPatient(name: string, phone: string, procedure: string): Pr
 export async function submitEscalation(input: {
   token: string; message: string; severity: Severity; photoUrl?: string;
 }): Promise<void> {
-  const mapping = escTokens.get(input.token);
-  const { data: latest } = await supabaseAdmin!.from("Enrollment").select("id,patientId").eq("orgId", ORG_ID).order("startedAt", { ascending: false }).limit(1).maybeSingle();
-  const enrollmentId = mapping?.enrollmentId ?? latest?.id;
-  const patientId = mapping?.patientId ?? latest?.patientId;
+  // Resolve strictly by token. There is deliberately no "most recent
+  // enrollment" fallback here: guessing would file one patient's medical
+  // complaint against another patient's record. An unresolvable token is an
+  // error, not something to paper over.
+  const enrollment = await getEnrollmentByToken(input.token);
+  if (!enrollment) throw new Error("This link is no longer valid.");
+
   await supabaseAdmin!.from("Alert").insert({
-    id: `alert_${nanoid(10)}`, enrollmentId, patientId, orgId: ORG_ID,
+    id: `alert_${nanoid(10)}`,
+    enrollmentId: enrollment.id,
+    patientId: enrollment.patientId,
+    orgId: enrollment.orgId,
     severity: input.severity, category: "concern", message: input.message,
     photoUrl: input.photoUrl, status: "OPEN",
   });
@@ -277,5 +304,5 @@ export async function upgradePlan(plan: string): Promise<void> {
   await supabaseAdmin!.from("Organization").update({ plan: plan as Plan, status: "ACTIVE" }).eq("id", ORG_ID);
 }
 
-// Escalation registry mirror (used by public page + scheduler)
-export { escTokens };
+// Public link tokens live on Enrollment.escalationToken — see
+// getEnrollmentByToken() above. No in-process registry to export.

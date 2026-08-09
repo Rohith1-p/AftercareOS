@@ -66,13 +66,15 @@ export async function provisionNumber(areaCode?: string): Promise<{ phone: strin
 }
 
 // Validate an inbound Twilio webhook signature (used by /api/webhooks/sms).
-export function verifyTwilioSignature(
+// Async because this package is ESM — `require` is not available at runtime.
+export async function verifyTwilioSignature(
   url: string,
   params: Record<string, string>,
   signature: string,
   authToken?: string,
-): boolean {
-  if (!hasTwilio() || !authToken) return true; // skip in mock/dev
-  const twilio = require("twilio");
-  return twilio.validateRequest(authToken, signature, url, params);
+): Promise<boolean> {
+  const token = authToken ?? process.env.TWILIO_AUTH_TOKEN;
+  if (!hasTwilio() || !token) return true; // mock/dev: nothing to verify against
+  const twilio = await import("twilio");
+  return twilio.validateRequest(token, signature, url, params);
 }

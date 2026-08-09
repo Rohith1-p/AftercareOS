@@ -95,6 +95,8 @@ export interface Enrollment {
   appointmentAt: string;
   status: EnrollmentStatus;
   currentOffsetMin: number;
+  /** Opaque token backing the public /w/:token and /r/:token links. */
+  escalationToken?: string;
   startedAt: string;
   completedAt?: string;
 }

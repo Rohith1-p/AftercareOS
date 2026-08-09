@@ -26,6 +26,9 @@ const T = {
     successTitle: "Thank you — message sent",
     successBody:
       "Your concern has been routed to the clinic directly. They'll reach out to you shortly. For a true emergency, call 911 or go to the nearest ER.",
+    errorTitle: "We couldn't send that",
+    errorBody:
+      "This link may have expired. Please call your clinic directly. For a medical emergency, call 911 or go to the nearest ER.",
   },
   es: {
     badge: "Algo no está bien",
@@ -49,6 +52,9 @@ const T = {
     successTitle: "Gracias — mensaje enviado",
     successBody:
       "Tu mensaje se envió directamente a la clínica. Se comunicarán contigo pronto. Para una emergencia real, llama al 911 o ve a la sala de emergencias más cercana.",
+    errorTitle: "No pudimos enviar tu mensaje",
+    errorBody:
+      "Es posible que este enlace haya vencido. Por favor llama directamente a tu clínica. Para una emergencia médica, llama al 911 o ve a la sala de emergencias más cercana.",
   },
 } as const;
 

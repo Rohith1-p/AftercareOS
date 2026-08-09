@@ -3,6 +3,11 @@ import { Topbar } from "@/components/app/topbar";
 import { KeepAlive } from "@/components/app/keep-alive";
 import { getClinicProfile, getConversations } from "@/lib/data";
 
+// Every dashboard page renders live clinic data, so none of them can be
+// prerendered at build time — doing so made `next build` query Supabase from
+// the build worker and fail the whole export. Applies to all nested routes.
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {

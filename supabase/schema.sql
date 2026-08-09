@@ -148,6 +148,7 @@ CREATE TABLE "Enrollment" (
     "appointmentAt" TIMESTAMP(3) NOT NULL,
     "status" "EnrollmentStatus" NOT NULL DEFAULT 'ACTIVE',
     "currentOffsetMin" INTEGER NOT NULL DEFAULT 0,
+    "escalationToken" TEXT,
     "startedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "completedAt" TIMESTAMP(3),
 
@@ -273,6 +274,9 @@ CREATE INDEX "Enrollment_patientId_idx" ON "Enrollment"("patientId");
 
 -- CreateIndex
 CREATE INDEX "Enrollment_orgId_idx" ON "Enrollment"("orgId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Enrollment_escalationToken_key" ON "Enrollment"("escalationToken");
 
 -- CreateIndex
 CREATE INDEX "ScheduledMessage_sendAt_status_idx" ON "ScheduledMessage"("sendAt", "status");

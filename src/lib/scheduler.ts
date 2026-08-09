@@ -6,7 +6,7 @@ import { getClinicProfile } from "@/lib/data";
 import { sendSms } from "@/lib/twilio";
 import { renderTemplate } from "@/lib/messaging/tokens";
 import { isSupabaseConfigured, supabaseAdmin } from "@/lib/supabase-server";
-import { escalationLinkFor as repoEscalationLinkFor } from "@/lib/data/supabase-repo";
+import { appBaseUrl } from "@/lib/data/supabase-repo";
 import { nanoid } from "nanoid";
 
 export interface SendReport {
@@ -148,12 +148,19 @@ async function processDueSupabase(now: Date): Promise<SendReport> {
       await supabaseAdmin!.from("ScheduledMessage").update({ status: "FAILED", error: "missing refs", attempts: (sm.attempts ?? 0) + 1 }).eq("id", sm.id);
       report.failed += 1; continue;
     }
+    // Public links resolve through Enrollment.escalationToken, which is
+    // persisted at enrollment time — the patient's click can land on any
+    // serverless instance, so there is nothing in local memory to consult.
+    const token: string | undefined = enrollment.escalationToken ?? undefined;
     let body = renderTemplate(step.body, {
       first_name: patient.name.split(" ")[0], clinic_name: clinic.name,
       procedure: enrollment.procedureLabel ?? "", book_link: clinic.bookingUrl,
-      review_link: clinic.reviewLink, reply_to: clinic.twilioNumber,
+      review_link: token ? `${appBaseUrl()}/r/${token}` : clinic.reviewLink,
+      reply_to: clinic.twilioNumber,
     });
-    if (step.includeEscalation) body = withEscalationCta(body, repoEscalationLinkFor(enrollment.id));
+    if (step.includeEscalation && token) {
+      body = withEscalationCta(body, `${appBaseUrl()}/w/${token}`);
+    }
     try {
       const res = await sendSms(patient.phone, body, { from: clinic.twilioNumber });
       await supabaseAdmin!.from("MessageLog").insert({

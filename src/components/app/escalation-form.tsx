@@ -19,14 +19,35 @@ export function EscalationForm({ token, lang = "en" }: { token: string; lang?: L
   const [severity, setSeverity] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [pending, startTransition] = useTransition();
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    setFailed(false);
     startTransition(async () => {
-      await submitEscalationAction({ token, message, severity });
-      setSubmitted(true);
+      try {
+        await submitEscalationAction({ token, message, severity });
+        setSubmitted(true);
+      } catch {
+        // An unresolvable token now throws rather than attaching the report to
+        // the wrong patient. Tell them to phone the clinic instead of leaving
+        // them believing a medical concern was delivered.
+        setFailed(true);
+      }
     });
+  }
+
+  if (failed) {
+    return (
+      <div className="glass mx-auto mt-16 max-w-md rounded-card p-8 text-center shadow-lg">
+        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-pill bg-danger/15 text-danger">
+          <AlertTriangle className="h-7 w-7" />
+        </div>
+        <h2 className="text-xl font-extrabold text-ink">{t(lang, "errorTitle")}</h2>
+        <p className="mt-2 text-sm text-muted">{t(lang, "errorBody")}</p>
+      </div>
+    );
   }
 
   if (submitted) {
