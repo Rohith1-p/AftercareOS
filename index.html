@@ -86,13 +86,11 @@
         <span class="hero-claim">follow-up lifts rebooking from <strong>40-50% to 70-80%</strong></span>
         <span class="hero-claim">automated aftercare hands your team back <strong>5+ hours a week</strong></span>
       </div>
-      <p class="hero-subheadline">
-        They lose the sheet, forget what you said, panic at 11PM, and you spend your nights replying to "Is this normal?" DMs.<br>
-        <strong>Post-treatment aftercare is where great results quietly turn into bad reviews.</strong>
-      </p>
-      <button class="btn btn-primary btn-lg" onclick="document.getElementById('waitlist').scrollIntoView({behavior: 'smooth'})">
-        Lock In Founder Pricing
-      </button>
+      <form class="hero-capture" id="hero-form">
+        <input type="email" id="hero-email" name="email" placeholder="Enter your email" autocomplete="email" required>
+        <button type="submit" class="btn btn-primary btn-lg">Lock In Founder Pricing</button>
+      </form>
+      <p class="hero-form-msg" id="hero-msg" role="status" aria-live="polite"></p>
     </div>
   </header>
 
@@ -302,6 +300,56 @@
     const wlForm = document.getElementById('waitlist-form');
     const wlMsg = document.getElementById('wl-msg');
     const wlSubmit = document.getElementById('wl-submit');
+
+    // Hero email capture → same Supabase Waitlist table, tagged source
+    const heroForm = document.getElementById('hero-form');
+    const heroMsg = document.getElementById('hero-msg');
+    const heroEmail = document.getElementById('hero-email');
+    const heroBtn = heroForm.querySelector('button');
+
+    heroForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = heroEmail.value.trim();
+
+      heroMsg.textContent = '';
+      heroMsg.className = 'hero-form-msg';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        heroMsg.textContent = 'Please enter a valid email address.';
+        heroMsg.classList.add('err');
+        return;
+      }
+
+      heroBtn.disabled = true;
+      const origText = heroBtn.textContent;
+      heroBtn.textContent = 'Locking you in…';
+      try {
+        const res = await fetch(`${SB_URL}/rest/v1/Waitlist`, {
+          method: 'POST',
+          headers: {
+            apikey: SB_KEY,
+            Authorization: `Bearer ${SB_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ email, source: 'landing-hero' }),
+        });
+        if (res.ok) {
+          heroForm.reset();
+          heroMsg.textContent = "You're on the list! We'll be in touch soon. 🎉";
+          heroMsg.classList.add('ok');
+        } else {
+          const data = await res.json().catch(() => null);
+          heroMsg.textContent = (data && data.message) || 'Something went wrong — please try again.';
+          heroMsg.classList.add('err');
+        }
+      } catch {
+        heroMsg.textContent = 'Network error — please try again.';
+        heroMsg.classList.add('err');
+      } finally {
+        heroBtn.disabled = false;
+        heroBtn.textContent = origText;
+      }
+    });
 
     wlForm.addEventListener('submit', async (e) => {
       e.preventDefault();
