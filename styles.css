@@ -277,6 +277,40 @@ body::before {
   color: var(--color-dark);
 }
 
+/* ===== Hero Claims (proof stats) ===== */
+.hero-claims {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 12px;
+  margin: -4px auto 28px;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.hero-claim strong {
+  color: var(--color-dark);
+  font-weight: 700;
+}
+
+.hero-claim-sep {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .hero-claims {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 1.05rem;
+  }
+  .hero-claim-sep {
+    display: none;
+  }
+}
+
 /* ===== Product Showcase ===== */
 .product-showcase {
   padding: 0 24px 80px;
