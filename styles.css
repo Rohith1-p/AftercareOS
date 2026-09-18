@@ -280,10 +280,9 @@ body::before {
 /* ===== Hero Claims (proof stats) ===== */
 .hero-claims {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 6px 12px;
+  gap: 6px;
   margin: -4px auto 28px;
   font-size: 1.15rem;
   line-height: 1.5;
@@ -295,19 +294,9 @@ body::before {
   font-weight: 700;
 }
 
-.hero-claim-sep {
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
 @media (max-width: 768px) {
   .hero-claims {
-    flex-direction: column;
-    gap: 8px;
     font-size: 1.05rem;
-  }
-  .hero-claim-sep {
-    display: none;
   }
 }
 
