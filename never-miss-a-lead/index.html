@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Never Miss a Lead — AI Receptionist &amp; Review Automation for Local Practices | AftercareOS</title>
+  <meta name="description" content="We install AI phone receptionists and automated review-request systems for dental practices and local businesses. Every call answered, every patient followed up. Done for you, live in days.">
+  <link rel="canonical" href="https://aftercareos.com/never-miss-a-lead/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AftercareOS">
+  <meta property="og:title" content="Never Miss a Lead, by AftercareOS — Improve your business or don't miss your leads">
+  <meta property="og:description" content="AI receptionists and automated review systems for dental practices and local businesses. Live in days, month-one guarantee.">
+  <meta property="og:url" content="https://aftercareos.com/never-miss-a-lead/">
+  <meta property="og:image" content="https://aftercareos.com/og-image.png">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Never Miss a Lead, by AftercareOS">
+  <meta name="twitter:description" content="AI receptionists and automated review systems for local practices. Live in days, month-one guarantee.">
+  <meta name="twitter:image" content="https://aftercareos.com/og-image.png">
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "AftercareOS",
+    "url": "https://aftercareos.com/never-miss-a-lead/",
+    "description": "AI receptionist and automated review-request systems for dental practices and local businesses.",
+    "areaServed": "United States",
+    "serviceType": ["AI Receptionist", "Review Automation", "Missed Call Text-Back"]
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Tokens (matched to aftercareos.com brand) ===== */
+    :root {
+      --color-dark: #1a1a1a;
+      --color-dark-soft: #2d2d2d;
+      --color-text: #333;
+      --color-text-muted: #5c5c5c;
+      --color-accent: #e85d2c;
+      --color-accent-deep: #d14e1f;
+      --color-accent-soft: #f07a4f;
+      --color-card: rgba(255, 255, 255, 0.88);
+      --color-card-border: rgba(0, 0, 0, 0.06);
+      --color-good: #1f9d55;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+      --shadow-xl: 0 24px 64px rgba(232, 93, 44, 0.18);
+      --radius-card: 20px;
+      --radius-btn: 12px;
+      --radius-pill: 9999px;
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--color-text);
+      background: linear-gradient(135deg,
+        #fefefe 0%, #fef9f6 15%, #fde8d0 35%, #fad0b8 52%,
+        #f6b0a8 70%, #eba8c0 88%, #d8a8d8 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    section { position: relative; z-index: 1; }
+
+    /* ===== Corner brand ===== */
+    .corner-brand {
+      position: fixed; top: 26px; left: 28px; z-index: 101;
+      display: flex; align-items: center; gap: 7px;
+      font-weight: 800; font-size: 0.85rem; letter-spacing: -0.01em;
+      color: var(--color-dark); text-decoration: none; opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .corner-brand:hover { opacity: 1; }
+    @media (max-width: 1150px) { .corner-brand { display: none; } }
+
+    /* ===== Nav ===== */
+    .nav {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 100; width: calc(100% - 48px); max-width: 780px;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--color-dark); padding: 12px 24px;
+      border-radius: var(--radius-pill); box-shadow: var(--shadow-md);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; font-size: 1.05rem; }
+    .logo-icon { color: var(--color-accent-soft); font-size: 1.2rem; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a { color: rgba(255,255,255,0.82); text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: var(--color-accent); color: #fff !important;
+      padding: 8px 18px; border-radius: var(--radius-pill); font-weight: 700;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--color-accent-deep); }
+    @media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+    /* ===== Hero ===== */
+    .hero { padding: 150px 0 40px; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+      .hero { padding-top: 130px; }
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--color-dark); color: #fff;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em;
+      padding: 8px 16px; border-radius: var(--radius-pill);
+      margin-bottom: 24px; text-transform: uppercase;
+    }
+    .eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); box-shadow: 0 0 0 3px rgba(232,93,44,0.3); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(232,93,44,0.3);} 50% { box-shadow: 0 0 0 6px rgba(232,93,44,0.12);} }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5.6vw, 4.1rem);
+      font-weight: 800; line-height: 1.06; letter-spacing: -0.03em;
+      color: var(--color-dark); margin-bottom: 22px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(120deg, var(--color-accent) 20%, #e05a8a 90%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero-sub { font-size: 1.15rem; color: var(--color-text-muted); max-width: 540px; margin-bottom: 30px; }
+    .hero-sub strong { color: var(--color-dark); }
+
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: var(--font); font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer; text-decoration: none;
+      border-radius: var(--radius-btn); padding: 15px 28px;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-deep) 100%);
+      color: #fff; box-shadow: var(--shadow-xl);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 30px 70px rgba(232,93,44,0.28); }
+    .btn-ghost { background: rgba(255,255,255,0.7); color: var(--color-dark); border: 1.5px solid rgba(0,0,0,0.1); }
+    .btn-ghost:hover { background: #fff; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    .hero-checks { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+    .hero-checks span { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--color-dark-soft); }
+    .tick { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* iPhone-style mockup */
+    .phone-wrap { display: flex; justify-content: center; position: relative; }
+    .phone-glow {
+      position: absolute; inset: -8% -12%;
+      background: radial-gradient(closest-side, rgba(232,93,44,0.22), transparent 70%);
+      z-index: 0; pointer-events: none;
+    }
+    .phone {
+      position: relative; z-index: 1;
+      width: 298px; border-radius: 52px; padding: 10px;
+      background: linear-gradient(145deg, #4a4a4d 0%, #1d1d1f 28%, #55555a 52%, #2c2c2e 78%, #17171a 100%);
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.32),
+        0 12px 30px rgba(0,0,0,0.18),
+        inset 0 0 3px rgba(255,255,255,0.35);
+      transform: rotate(2.5deg);
+      transition: transform 0.4s;
+    }
+    .phone:hover { transform: rotate(0.8deg) translateY(-6px); }
+    /* titanium side buttons */
+    .phone::before, .phone::after { content: ''; position: absolute; background: linear-gradient(90deg, #55555a, #2c2c2e); border-radius: 3px; }
+    .phone::before { left: -3px; top: 118px; width: 3px; height: 24px; box-shadow: 0 38px 0 #55555a, 0 76px 0 #55555a; }
+    .phone::after { right: -3px; top: 170px; width: 3px; height: 56px; }
+    .phone-screen {
+      position: relative;
+      background: linear-gradient(180deg, #fdf8f5 0%, #f6e8de 100%);
+      border-radius: 46px; overflow: hidden;
+    }
+    .phone-island {
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      width: 76px; height: 23px; background: #000; border-radius: 16px; z-index: 5;
+    }
+    .phone-statusbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 17px 24px 6px; font-size: 0.8rem; font-weight: 700; color: var(--color-dark);
+    }
+    .statusbar-icons { display: flex; align-items: center; gap: 5px; }
+    .statusbar-icons svg { display: block; }
+    .phone-contact { text-align: center; padding: 10px 16px 12px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .phone-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-accent), #e05a8a);
+      color: #fff; font-weight: 800; font-size: 0.85rem;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 6px; box-shadow: 0 4px 12px rgba(232,93,44,0.3);
+      border: 2.5px solid #fff;
+    }
+    .phone-contact p { font-size: 0.92rem; font-weight: 700; color: var(--color-dark); display: inline-flex; align-items: center; gap: 4px; }
+    .phone-contact small { display: block; font-size: 0.68rem; color: var(--color-text-muted); font-weight: 600; }
+    .phone-msgs { padding: 14px 12px 18px; display: flex; flex-direction: column; gap: 8px; min-height: 336px; }
+    .stamp { align-self: center; font-size: 0.66rem; font-weight: 700; color: #8e8680; margin-bottom: 2px; }
+    .bubble {
+      max-width: 82%; padding: 10px 14px; font-size: 0.83rem; line-height: 1.42;
+      border-radius: 18px; color: #1c1c1e; box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    .bubble.from { align-self: flex-start; background: #e9e9eb; border-bottom-left-radius: 6px; }
+    .bubble.to { align-self: flex-end; background: linear-gradient(180deg, #3ea0ff 0%, #0a84ff 100%); color: #fff; border-bottom-right-radius: 6px; }
+    .bubble b { font-weight: 700; }
+    .bubble-booked { align-self: center; display: inline-flex; align-items: center; gap: 7px;
+      background: #e8f7ee; color: var(--color-good); border: 1.5px solid #bfe6cd;
+      font-size: 0.76rem; font-weight: 800; padding: 8px 14px; border-radius: var(--radius-pill); margin-top: 4px; }
+    .phone-caption { text-align: center; margin-top: 18px; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); }
+
+    /* ===== Review growth chart ===== */
+    .chart-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 28px; box-shadow: var(--shadow-lg); backdrop-filter: blur(8px);
+      padding: 44px 40px 28px; position: relative; overflow: hidden;
+    }
+    .chart-card::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(232,93,44,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .chart-head { text-align: center; margin-bottom: 8px; position: relative; }
+    .chart-title { font-size: 1.35rem; font-weight: 800; color: var(--color-dark); letter-spacing: -0.02em; }
+    .chart-sub { font-size: 0.9rem; color: var(--color-text-muted); margin-top: 4px; }
+    .growth-svg { width: 100%; height: auto; display: block; }
+    .growth-line {
+      fill: none; stroke: var(--color-accent); stroke-width: 4.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .js-anim .growth-line { stroke-dasharray: 1200; stroke-dashoffset: 1200; transition: stroke-dashoffset 2s cubic-bezier(0.22, 0.8, 0.3, 1) 0.2s; }
+    .js-anim.in .growth-line { stroke-dashoffset: 0; }
+    .growth-area { opacity: 0; transition: opacity 1.1s ease 1.5s; }
+    .js-anim.in .growth-area { opacity: 1; }
+    .growth-dot { opacity: 0; transform-origin: center; transform-box: fill-box; transform: scale(0); transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.85s; }
+    .js-anim.in .growth-dot { opacity: 1; transform: scale(1); }
+    .growth-badge { opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease 2.1s, transform 0.5s ease 2.1s; }
+    .js-anim.in .growth-badge { opacity: 1; transform: none; }
+    .chart-note { text-align: center; font-size: 0.75rem; color: var(--color-text-muted); margin-top: 10px; }
+    @keyframes dotPulse { 0%,100% { r: 9; opacity: 0.5; } 50% { r: 14; opacity: 0.15; } }
+    .growth-pulse { animation: dotPulse 2.2s ease-in-out infinite 2.3s; }
+
+    /* ===== Outcome trio ===== */
+    .outcome-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 22px; align-items: stretch; }
+    @media (max-width: 860px) { .outcome-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+    .outcome-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-card); padding: 30px 28px; box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px); text-align: center;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .outcome-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .outcome-icon {
+      width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(232,93,44,0.12); color: var(--color-accent);
+    }
+    .outcome-icon svg { width: 24px; height: 24px; }
+    .outcome-card h3 { font-size: 1.08rem; font-weight: 800; color: var(--color-dark); margin-bottom: 8px; }
+    .outcome-card p { font-size: 0.9rem; color: var(--color-text-muted); }
+    .outcome-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--color-accent); font-weight: 700; }
+    @media (max-width: 860px) { .outcome-arrow { transform: rotate(90deg); height: 24px; } }
+
+    /* ===== Stats band ===== */
+    .stats { background: var(--color-dark); border-radius: 28px; padding: 54px 40px; margin: 64px auto; box-shadow: var(--shadow-lg); }
+    .stats h2 { color: #fff; font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -0.02em; text-align: center; margin-bottom: 40px; line-height: 1.25; }
+    .stats h2 .accent { color: var(--color-accent-soft); }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; text-align: center; }
+    .stat-num { font-size: clamp(2.4rem, 4.5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; color: var(--color-accent-soft); line-height: 1.1; }
+    .stat-label { color: rgba(255,255,255,0.75); font-size: 0.95rem; margin-top: 8px; max-width: 240px; margin-left: auto; margin-right: auto; }
+    @media (max-width: 780px) { .stats-grid { grid-template-columns: 1fr; gap: 28px; } }
+
+    /* ===== Section headers ===== */
+    .section-pad { padding: 72px 0; }
+    .kicker { display: block; text-align: center; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 14px; }
+    .section-headline { text-align: center; font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.025em; color: var(--color-dark); line-height: 1.15; margin-bottom: 16px; }
+    .section-subheadline { text-align: center; font-size: 1.1rem; color: var(--color-text-muted); max-width: 640px; margin: 0 auto 52px; }
+
+    /* ===== Service cards ===== */
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    @media (max-width: 860px) { .services-grid { grid-template-columns: 1fr; } }
+    .service-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 26px; padding: 40px 36px; box-shadow: var(--shadow-md);
+      backdrop-filter: blur(8px); position: relative; overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .service-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, var(--color-accent), #e05a8a);
+    }
+    .service-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-soft));
+      display: flex; align-items: center; justify-content: center; margin-bottom: 22px;
+      box-shadow: 0 10px 24px rgba(232,93,44,0.35);
+    }
+    .service-icon svg { width: 28px; height: 28px; }
+    .service-tag { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 8px; }
+    .service-card h3 { font-size: 1.5rem; font-weight: 800; color: var(--color-dark); letter-spacing: -0.02em; margin-bottom: 10px; }
+    .service-card > p { color: var(--color-text-muted); margin-bottom: 22px; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .feature-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 0.95rem; color: var(--color-dark-soft); }
+    .feature-list svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
+
+    .includes-strip {
+      margin-top: 28px; background: rgba(26,26,26,0.04); border: 1px dashed rgba(0,0,0,0.14);
+      border-radius: var(--radius-card); padding: 18px 28px; text-align: center;
+      font-size: 0.92rem; font-weight: 600; color: var(--color-dark-soft);
+    }
+    .includes-strip b { color: var(--color-accent); }
+
+    /* ===== Steps ===== */
+    .steps-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 18px; align-items: stretch; }
+    @media (max-width: 860px) { .steps-grid { grid-template-columns: 1fr; } .step-arrow { transform: rotate(90deg); margin: -4px auto; } }
+    .step-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-card); padding: 32px 28px; box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px);
+    }
+    .step-number {
+      display: inline-flex; width: 42px; height: 42px; border-radius: 50%;
+      background: var(--color-dark); color: var(--color-accent-soft);
+      font-weight: 800; font-size: 1.15rem; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .step-card h3 { font-size: 1.12rem; font-weight: 800; color: var(--color-dark); margin-bottom: 8px; letter-spacing: -0.01em; }
+    .step-card p { font-size: 0.93rem; color: var(--color-text-muted); }
+    .step-arrow { display: flex; align-items: center; font-size: 1.5rem; color: var(--color-accent); font-weight: 700; }
+
+    /* ===== Guarantee ===== */
+    .guarantee {
+      background: linear-gradient(135deg, var(--color-dark) 0%, #2a1f1a 100%);
+      border-radius: 28px; padding: 56px 48px; text-align: center;
+      box-shadow: var(--shadow-lg); position: relative; overflow: hidden; margin: 0 0;
+    }
+    .guarantee::before {
+      content: ''; position: absolute; top: -60%; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(232,93,44,0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .guarantee-inner { position: relative; }
+    .guarantee-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(232,93,44,0.15); border: 1.5px solid rgba(232,93,44,0.5);
+      color: var(--color-accent-soft); font-size: 0.78rem; font-weight: 800;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 10px 20px; border-radius: var(--radius-pill); margin-bottom: 24px;
+    }
+    .guarantee h2 { color: #fff; font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .guarantee h2 .accent { color: var(--color-accent-soft); }
+    .guarantee p { color: rgba(255,255,255,0.75); max-width: 560px; margin: 0 auto; font-size: 1.02rem; }
+
+    /* ===== Pricing ===== */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+    @media (max-width: 860px) { .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+    .price-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 24px; padding: 36px 30px; box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(8px); display: flex; flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .price-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .price-card.popular {
+      background: var(--color-dark); border: 2px solid var(--color-accent);
+      box-shadow: var(--shadow-lg); position: relative;
+    }
+    .popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-soft));
+      color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 6px 16px; border-radius: var(--radius-pill);
+      box-shadow: 0 8px 20px rgba(232,93,44,0.4); white-space: nowrap;
+    }
+    .price-name { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 12px; }
+    .price-card.popular .price-name { color: var(--color-accent-soft); }
+    .price-amount { font-size: 2.7rem; font-weight: 800; letter-spacing: -0.03em; color: var(--color-dark); line-height: 1; }
+    .price-card.popular .price-amount { color: #fff; }
+    .price-amount small { font-size: 0.95rem; font-weight: 600; color: var(--color-text-muted); letter-spacing: 0; }
+    .price-card.popular .price-amount small { color: rgba(255,255,255,0.6); }
+    .price-desc { font-size: 0.9rem; color: var(--color-text-muted); margin: 12px 0 22px; }
+    .price-card.popular .price-desc { color: rgba(255,255,255,0.7); }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; flex: 1; }
+    .price-features li { display: flex; gap: 10px; font-size: 0.9rem; color: var(--color-dark-soft); align-items: flex-start; }
+    .price-card.popular .price-features li { color: rgba(255,255,255,0.85); }
+    .price-features svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 3px; }
+    .pricing-note { text-align: center; margin-top: 30px; font-size: 0.92rem; color: var(--color-text-muted); }
+    .pricing-note b { color: var(--color-accent); }
+
+    /* ===== FAQ ===== */
+    .faq-wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .faq-item {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 16px; box-shadow: var(--shadow-sm); backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+    .faq-item summary {
+      list-style: none; cursor: pointer; display: flex; justify-content: space-between;
+      align-items: center; gap: 16px; padding: 20px 24px;
+      font-weight: 700; color: var(--color-dark); font-size: 0.98rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-chevron { flex-shrink: 0; width: 22px; height: 22px; color: var(--color-accent); transition: transform 0.25s; }
+    .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+    .faq-body { padding: 0 24px 22px; font-size: 0.93rem; color: var(--color-text-muted); }
+
+    /* ===== Final CTA / form ===== */
+    .cta-section { padding: 72px 0 96px; }
+    .cta-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 32px; box-shadow: var(--shadow-lg); backdrop-filter: blur(10px);
+      padding: 64px 56px; text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: ''; position: absolute; top: -120px; right: -120px;
+      width: 380px; height: 380px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(232,93,44,0.16), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; max-width: 620px; margin: 0 auto; }
+    .lead-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; text-align: left; }
+    .lead-form .full { grid-column: 1 / -1; }
+    @media (max-width: 640px) { .lead-form { grid-template-columns: 1fr; } .cta-card { padding: 48px 26px; } }
+    .lead-form input {
+      font-family: var(--font); font-size: 0.95rem; color: var(--color-dark);
+      padding: 15px 18px; border-radius: var(--radius-btn);
+      border: 1.5px solid rgba(0,0,0,0.12); background: #fff;
+      transition: border 0.2s, box-shadow 0.2s; width: 100%;
+    }
+    .lead-form input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 4px rgba(232,93,44,0.15); }
+    .lead-form input::placeholder { color: #9a8f88; }
+    .form-msg { margin-top: 16px; font-weight: 700; font-size: 0.95rem; min-height: 1.4em; }
+    .form-msg.ok { color: var(--color-good); }
+    .form-msg.err { color: #d33; }
+    .cta-fineprint { margin-top: 18px; font-size: 0.85rem; color: var(--color-text-muted); }
+
+    /* ===== Footer ===== */
+    .footer { padding: 36px 0 48px; border-top: 1px solid rgba(0,0,0,0.07); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-inner p { font-size: 0.85rem; color: var(--color-text-muted); }
+    .footer-inner a { color: var(--color-dark); font-weight: 700; text-decoration: none; }
+    .footer-inner a:hover { color: var(--color-accent); }
+
+    /* ===== Reveal animation ===== */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .eyebrow-dot { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- AftercareOS corner mark (top-left, trust anchor) -->
+  <a href="/" class="corner-brand" aria-label="AftercareOS home"><span class="logo-icon">&#9670;</span>AftercareOS</a>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo"><span class="logo-icon">&#9670;</span><span>Never Miss a Lead</span></a>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#demo" class="nav-cta">Book a Call</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Now onboarding local practices</span>
+          <h1>Improve your business or <span class="accent">don't miss your leads.</span></h1>
+          <p class="hero-sub">
+            We install <strong>AI receptionists</strong> and <strong>automated review systems</strong> for dental
+            practices and local businesses. Every call answered, every patient followed up,
+            every review earned. Done for you, live in days.
+          </p>
+          <div class="hero-ctas">
+            <a href="#demo" class="btn btn-primary">Book a Free 2-Minute Call</a>
+            <a href="#services" class="btn btn-ghost">See what we install</a>
+          </div>
+          <div class="hero-checks">
+            <span><svg class="tick" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Answers calls 24/7</span>
+            <span><svg class="tick" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Books into your calendar</span>
+            <span><svg class="tick" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Month-one guarantee</span>
+          </div>
+        </div>
+
+        <!-- iPhone demo -->
+        <div class="phone-wrap">
+          <div class="phone-glow"></div>
+          <div>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-island"></div>
+                <div class="phone-statusbar">
+                  <span>6:47</span>
+                  <span class="statusbar-icons">
+                    <svg width="15" height="10" viewBox="0 0 17 11" fill="#1a1a1a"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="2.5" width="3" height="8.5" rx="0.8"/><rect x="13.5" y="0" width="3" height="11" rx="0.8"/></svg>
+                    <svg width="14" height="10" viewBox="0 0 16 11" fill="#1a1a1a"><path d="M8 9.2a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zM8 5.6c-1.6 0-3 .6-4.1 1.7l1.4 1.4A3.9 3.9 0 0 1 8 7.6c1 0 2 .4 2.7 1.1l1.4-1.4A5.9 5.9 0 0 0 8 5.6zM8 2C5.4 2 3 3 1.2 4.8l1.4 1.4A7.7 7.7 0 0 1 8 4c2 0 3.9.8 5.4 2.2l1.4-1.4A9.7 9.7 0 0 0 8 2z" transform="translate(0 -2)"/></svg>
+                    <svg width="22" height="11" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" fill="none" stroke="#1a1a1a" stroke-opacity="0.4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1a1a1a"/><path d="M23 4v4c1-0.3 1.6-1 1.6-2S24 4.3 23 4z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+                  </span>
+                </div>
+                <div class="phone-contact">
+                  <span class="phone-avatar">CD</span>
+                  <p>Chicago Dental Clinic</p>
+                </div>
+                <div class="phone-msgs">
+                  <span class="stamp">Today &middot; 6:47 PM</span>
+                  <div class="bubble from"><b>Hi, this is the front desk at Chicago Dental.</b> Sorry we missed you! Are you looking to book an appointment?</div>
+                  <div class="bubble to">Yes! I cracked a tooth. Anything open tomorrow?</div>
+                  <div class="bubble from"><b>Ouch, let's get you in fast.</b> Dr. Lee has 9:20 AM tomorrow. Does that work?</div>
+                  <div class="bubble to">Perfect, I'll take it.</div>
+                  <span class="bubble-booked"><svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Booked: Tomorrow, 9:20 AM</span>
+                  <span class="stamp" style="margin-top:2px;">Delivered</span>
+                </div>
+              </div>
+            </div>
+            <p class="phone-caption">What your patients experience when you can't pick up.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Outcome flywheel -->
+  <section class="section-pad" style="padding-top: 12px;">
+    <div class="container">
+      <span class="kicker reveal">The flywheel</span>
+      <h2 class="section-headline reveal">Happy clients. More bookings. More referrals.</h2>
+      <p class="section-subheadline reveal">Every caught call and every five-star review feeds the next one. That's the whole game.</p>
+      <div class="outcome-grid">
+        <div class="outcome-card reveal">
+          <div class="outcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div>
+          <h3>Happy clients</h3>
+          <p>Every patient gets an answer, a booking, and a follow-up. No one feels ignored.</p>
+        </div>
+        <div class="outcome-arrow reveal">&#8594;</div>
+        <div class="outcome-card reveal">
+          <div class="outcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <h3>More bookings</h3>
+          <p>Missed calls become appointments on your calendar, automatically, 24/7.</p>
+        </div>
+        <div class="outcome-arrow reveal">&#8594;</div>
+        <div class="outcome-card reveal">
+          <div class="outcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>More referrals</h3>
+          <p>Five-star reviews compound. New patients find you first and tell their friends.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="container reveal">
+    <div class="stats">
+      <h2>Your next patient is calling right now.<br><span class="accent">Here's what happens if no one picks up.</span></h2>
+      <div class="stats-grid">
+        <div>
+          <div class="stat-num">1 in 4</div>
+          <p class="stat-label">calls to small practices rings out with no answer, mostly during busy hours</p>
+        </div>
+        <div>
+          <div class="stat-num">$1,500+</div>
+          <p class="stat-label">average lifetime value of a single new patient for a dental practice</p>
+        </div>
+        <div>
+          <div class="stat-num">80%</div>
+          <p class="stat-label">of callers who reach a voicemail will simply dial the next practice instead</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Review growth chart -->
+  <section class="section-pad" id="results" style="padding-top: 8px;">
+    <div class="container">
+      <span class="kicker reveal">The compounding effect</span>
+      <h2 class="section-headline reveal">Reviews don't trickle in. They stack.</h2>
+      <p class="section-subheadline reveal">Every automated ask lands right after a great visit, while goodwill is highest. That's what the curve looks like:</p>
+
+      <div class="chart-card js-anim reveal">
+        <div class="chart-head">
+          <p class="chart-title">New Google reviews per month</p>
+          <p class="chart-sub">A practice's first 4 months on Never Miss a Lead</p>
+        </div>
+        <svg class="growth-svg" viewBox="0 0 560 320" role="img" aria-label="Chart showing new reviews per month growing from 12 at onboarding to 214 after four months, up 1,680 percent">
+          <defs>
+            <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#e85d2c" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#e85d2c" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- gridlines -->
+          <g stroke="rgba(0,0,0,0.12)" stroke-dasharray="3 5">
+            <line x1="56" y1="224.4" x2="530" y2="224.4"/>
+            <line x1="56" y1="168.8" x2="530" y2="168.8"/>
+            <line x1="56" y1="113.2" x2="530" y2="113.2"/>
+            <line x1="56" y1="57.6" x2="530" y2="57.6"/>
+          </g>
+          <!-- y labels -->
+          <g font-size="11.5" fill="#a09790" text-anchor="end">
+            <text x="46" y="284">0</text>
+            <text x="46" y="228">50</text>
+            <text x="46" y="172">100</text>
+            <text x="46" y="117">150</text>
+            <text x="46" y="61">200+</text>
+          </g>
+          <!-- axes -->
+          <line x1="56" y1="30" x2="56" y2="280" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+          <line x1="56" y1="280" x2="530" y2="280" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+          <!-- area under curve -->
+          <path class="growth-area" fill="url(#areaFill)"
+            d="M 56 280 C 90 278, 120 264, 150.8 252 C 185 240, 215 228, 245.6 210 C 280 190, 310 172, 340.4 150 C 375 126, 405 108, 435.2 90 C 468 71, 500 55, 530 42 L 530 280 Z"/>
+          <!-- the curve -->
+          <path class="growth-line"
+            d="M 56 280 C 90 278, 120 264, 150.8 252 C 185 240, 215 228, 245.6 210 C 280 190, 310 172, 340.4 150 C 375 126, 405 108, 435.2 90 C 468 71, 500 55, 530 42"/>
+          <!-- start marker -->
+          <text x="70" y="266" font-size="11.5" font-weight="700" fill="#8e8680">12/mo</text>
+          <!-- month dots -->
+          <g fill="#fff" stroke="#e85d2c" stroke-width="3">
+            <circle class="growth-dot" cx="56" cy="280" r="6"/>
+            <circle class="growth-dot" cx="150.8" cy="252" r="6" style="transition-delay: 0.35s;"/>
+            <circle class="growth-dot" cx="245.6" cy="210" r="6" style="transition-delay: 0.7s;"/>
+            <circle class="growth-dot" cx="340.4" cy="150" r="6" style="transition-delay: 1.05s;"/>
+            <circle class="growth-dot" cx="435.2" cy="90" r="6" style="transition-delay: 1.4s;"/>
+          </g>
+          <!-- end dot + pulse + badge -->
+          <circle class="growth-pulse" cx="530" cy="42" r="9" fill="#e85d2c" opacity="0.4"/>
+          <circle class="growth-dot" cx="530" cy="42" r="8" fill="#e85d2c" stroke="#fff" stroke-width="3"/>
+          <g class="growth-badge">
+            <rect x="352" y="2" width="164" height="34" rx="17" fill="#1a1a1a"/>
+            <text x="434" y="24" text-anchor="middle" font-size="15" font-weight="800" fill="#f07a4f">+1,680% <tspan fill="#ffffff" font-weight="700" font-size="12.5">reviews/mo</tspan></text>
+          </g>
+          <!-- x labels -->
+          <g font-size="12" fill="#8e8680" text-anchor="middle">
+            <text x="56" y="304" font-weight="700" fill="#1a1a1a">Onboarded</text>
+            <text x="150.8" y="304">Month 1</text>
+            <text x="245.6" y="304">Month 2</text>
+            <text x="340.4" y="304">Month 3</text>
+            <text x="435.2" y="304">Month 4</text>
+            <text x="530" y="304" font-weight="700" fill="#1a1a1a">Today</text>
+          </g>
+        </svg>
+        <p class="chart-note">Illustrative trajectory based on early onboarding results. Your curve depends on patient volume.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section-pad" id="services">
+    <div class="container">
+      <span class="kicker reveal">What we install</span>
+      <h2 class="section-headline reveal">Two systems. Installed for you.</h2>
+      <p class="section-subheadline reveal">No software to learn, no apps for your staff. We set it up, we monitor it, you get the leads.</p>
+
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.6 1.9z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <p class="service-tag">AI Receptionist</p>
+          <h3>Never miss a call again</h3>
+          <p>When your front desk is busy, closed, or off the clock, our AI answers on your real number, sounds natural, and gets the job done.</p>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Answers instantly, 24/7, on your existing number</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Books appointments straight into your calendar</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Texts you a summary of every conversation</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Instant missed-call text-back, so nobody goes cold</li>
+          </ul>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#fff"/></svg>
+          </div>
+          <p class="service-tag">Review Automation</p>
+          <h3>Turn happy patients into 5-star reviews</h3>
+          <p>After every visit, your patients get a friendly automatic text. Great experiences go public, concerns come to you first.</p>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Automatic review request after each appointment</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Happy patients get your Google review link</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Unhappy patients reach you privately, before Google</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Monthly report: calls caught, bookings made, reviews earned</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="includes-strip reveal">
+        Every install includes: <b>your own local number</b> &middot; month-to-month, <b>no contracts</b> &middot; done-for-you setup &middot; weekly lead report
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section-pad" id="how" style="padding-top: 24px;">
+    <div class="container">
+      <span class="kicker reveal">How it works</span>
+      <h2 class="section-headline reveal">Live in days, not months</h2>
+      <p class="section-subheadline reveal">We do the work. You approve it. That's the whole process.</p>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <span class="step-number">1</span>
+          <h3>We audit your phones</h3>
+          <p>We measure what your practice is missing: after-hours calls, ring-outs, voicemails. You see your real numbers, free.</p>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card reveal">
+          <span class="step-number">2</span>
+          <h3>We build your system</h3>
+          <p>AI receptionist and review automation, configured for your services, your calendar, your tone. Live in under 7 days.</p>
+        </div>
+        <div class="step-arrow">&#8594;</div>
+        <div class="step-card reveal">
+          <span class="step-number">3</span>
+          <h3>You watch leads land</h3>
+          <p>Every caught call, every booking, every new review, in a simple weekly report. Cancel anytime, month to month.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guarantee -->
+  <section class="container reveal" style="margin: 24px auto 0;">
+    <div class="guarantee">
+      <div class="guarantee-inner">
+        <span class="guarantee-badge">The month-one guarantee</span>
+        <h2>If we don't catch you <span class="accent">3 booked appointments</span> in your first month, month two is free.</h2>
+        <p>We're only worth paying for if your phones produce more. Simple as that.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="section-pad" id="pricing">
+    <div class="container">
+      <span class="kicker reveal">Pricing</span>
+      <h2 class="section-headline reveal">Less than one missed patient, per month</h2>
+      <p class="section-subheadline reveal">Flat monthly pricing. No per-minute surprises. Founding clients lock their rate for life.</p>
+
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <p class="price-name">Standard</p>
+          <p class="price-amount">$397<small>/mo</small></p>
+          <p class="price-desc">For solo practices that miss calls during busy hours.</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>AI receptionist on your number</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Calendar booking + call summaries</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Missed-call text-back</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Weekly lead report</li>
+          </ul>
+          <a href="#demo" class="btn btn-ghost" style="width:100%;">Book a Call</a>
+        </div>
+
+        <div class="price-card popular reveal">
+          <span class="popular-badge">Most popular</span>
+          <p class="price-name">Plus</p>
+          <p class="price-amount">$497<small>/mo</small></p>
+          <p class="price-desc">Receptionist + reviews. The full front desk, automated.</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Standard</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Automated review requests</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Private feedback routing</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Google review link + monthly review report</li>
+          </ul>
+          <a href="#demo" class="btn btn-primary" style="width:100%;">Book a Call</a>
+        </div>
+
+        <div class="price-card reveal">
+          <p class="price-name">Pro</p>
+          <p class="price-amount">$797<small>/mo</small></p>
+          <p class="price-desc">For busy or multi-location practices with 5+ staff.</p>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Plus</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Multi-line / multi-location routing</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom call scripts &amp; intake flows</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Priority support</li>
+          </ul>
+          <a href="#demo" class="btn btn-ghost" style="width:100%;">Book a Call</a>
+        </div>
+      </div>
+      <p class="pricing-note reveal">One-time setup from <b>$197</b>, waived for founding clients this quarter. First month <b>50% off</b>. Cancel anytime.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-pad" style="padding-top: 12px;">
+    <div class="container">
+      <span class="kicker reveal">Questions, answered</span>
+      <h2 class="section-headline reveal">The things owners always ask</h2>
+      <p class="section-subheadline reveal" style="margin-bottom: 40px;">Straight answers, no sales fog.</p>
+      <div class="faq-wrap">
+        <details class="faq-item reveal">
+          <summary>Does the AI sound like a robot? <svg class="faq-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <p class="faq-body">No. It uses natural, conversational speech and handles interruptions, accents, and background noise. Callers regularly can't tell. You approve the exact script before we go live, and it can hand off to a human anytime.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>Do I have to change my phone number? <svg class="faq-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <p class="faq-body">Never. You keep your real number. We add a simple forwarding rule: if your line rings out or it's after hours, our assistant picks up instead of the voicemail. Nothing changes for callers except that someone actually answers.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>How fast can this be live? <svg class="faq-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <p class="faq-body">Under 7 days from your go-ahead, usually 3. Setup is done by us: number routing, scripts, calendar connection, and testing. Your team doesn't install anything.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>What about patient privacy? <svg class="faq-chevron" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <p class="faq-body">We treat it seriously. The assistant only collects what's needed to book: name, number, reason, preferred time. Recordings and transcripts stay in your account, and we'll sign the paperwork your compliance requires.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-section" id="demo">
+    <div class="container">
+      <div class="cta-card reveal">
+        <div class="cta-inner">
+          <span class="kicker" style="text-align:center;">Free audit, no pressure</span>
+          <h2 class="section-headline" style="margin-bottom:14px;">Find out what your phones are costing you</h2>
+          <p class="section-subheadline" style="margin-bottom: 0;">We'll audit your missed calls and show you the numbers on a free 2-minute call. You decide if it's worth fixing.</p>
+
+          <!-- Lead form -> Supabase Waitlist table.
+               Field mapping: email=email, bookingSystem=practice name, segment=phone.
+               source tag: 'improve-your-business' distinguishes these leads. -->
+          <form class="lead-form" id="lead-form">
+            <input type="text" id="lf-name" name="name" placeholder="Your name" autocomplete="name" required>
+            <input type="text" id="lf-practice" name="practice" placeholder="Practice name" autocomplete="organization" required>
+            <input type="tel" id="lf-phone" name="phone" placeholder="Phone number" autocomplete="tel" required>
+            <input type="email" id="lf-email" name="email" placeholder="Work email" autocomplete="email" required>
+            <button type="submit" class="btn btn-primary full" id="lf-submit" style="width:100%; margin-top:6px;">Book My Free Call</button>
+          </form>
+          <p class="form-msg" id="lf-msg" role="status" aria-live="polite"></p>
+          <p class="cta-fineprint">We reply within one business day. No spam, no robocalls, and we'll never share your info.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="/" class="logo" style="color: var(--color-dark);"><span class="logo-icon">&#9670;</span><span>Never Miss a Lead</span></a>
+        <p>A service by <a href="/">AftercareOS</a> &middot; follow-up automation for local practices</p>
+        <p>&copy; 2026 AftercareOS. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); observer.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal, .js-anim').forEach(el => observer.observe(el));
+
+    // Lead form -> Supabase Waitlist (anon insert-only; publishable key is public by design)
+    const SB_URL = "https://rtpouxildqvtkvyvobdv.supabase.co";
+    const SB_KEY = "sb_publishable_Bz_3vLarwZ7KWfARXz_8PA_eEXdJh8l";
+    const leadForm = document.getElementById('lead-form');
+    const leadMsg = document.getElementById('lf-msg');
+    const leadSubmit = document.getElementById('lf-submit');
+
+    leadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('lf-name').value.trim();
+      const practice = document.getElementById('lf-practice').value.trim();
+      const phone = document.getElementById('lf-phone').value.trim();
+      const email = document.getElementById('lf-email').value.trim();
+
+      leadMsg.textContent = '';
+      leadMsg.className = 'form-msg';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        leadMsg.textContent = 'Please enter a valid email address.';
+        leadMsg.classList.add('err');
+        return;
+      }
+
+      leadSubmit.disabled = true;
+      leadSubmit.textContent = 'Booking your call…';
+      try {
+        const res = await fetch(`${SB_URL}/rest/v1/Waitlist`, {
+          method: 'POST',
+          headers: {
+            apikey: SB_KEY,
+            Authorization: `Bearer ${SB_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          // Waitlist column mapping: bookingSystem=practice, segment=phone
+          body: JSON.stringify({
+            email,
+            bookingSystem: practice || null,
+            segment: phone || null,
+            source: 'never-miss-a-lead',
+          }),
+        });
+        if (res.ok) {
+          leadForm.reset();
+          leadMsg.textContent = "Got it! We'll reach out within one business day to book your call.";
+          leadMsg.classList.add('ok');
+        } else {
+          const data = await res.json().catch(() => null);
+          leadMsg.textContent = (data && data.message) || 'Something went wrong — please try again.';
+          leadMsg.classList.add('err');
+        }
+      } catch {
+        leadMsg.textContent = 'Network error — please try again.';
+        leadMsg.classList.add('err');
+      } finally {
+        leadSubmit.disabled = false;
+        leadSubmit.textContent = 'Book My Free Call';
+      }
+    });
+  </script>
+</body>
+</html>
