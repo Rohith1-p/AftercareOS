@@ -399,6 +399,55 @@
     }
     .includes-strip b { color: var(--color-accent); }
 
+    /* ===== Win-back block ===== */
+    .winback {
+      margin-top: 28px; display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: center;
+      background: var(--color-dark); border-radius: 26px; padding: 36px 40px; box-shadow: var(--shadow-lg);
+    }
+    @media (max-width: 760px) { .winback { grid-template-columns: 1fr; gap: 22px; padding: 28px 24px; text-align: center; } }
+    .winback-text .service-tag { color: var(--color-accent-soft); }
+    .winback-text h3 { font-size: 1.45rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .winback-text p { color: rgba(255,255,255,0.72); font-size: 0.95rem; margin-bottom: 10px; max-width: 620px; }
+    .winback-text p:last-child { margin-bottom: 0; }
+    .winback-price { text-align: center; flex-shrink: 0; }
+    .winback-amount { font-size: 2.6rem; font-weight: 800; color: var(--color-accent-soft); letter-spacing: -0.03em; line-height: 1; }
+    .winback-amount small { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 0; }
+    .winback-note { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-top: 6px; }
+
+    /* ===== Info tooltips ===== */
+    .info {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 15px; height: 15px; flex-shrink: 0; margin-left: 5px;
+      border-radius: 50%; border: 1.3px solid currentColor; opacity: 0.45;
+      font-size: 9.5px; font-weight: 800; font-style: normal; line-height: 1;
+      cursor: pointer; position: relative; vertical-align: middle;
+      transition: opacity 0.15s; background: none; padding: 0; color: inherit;
+      font-family: var(--font);
+    }
+    .info:hover, .info.open { opacity: 1; }
+    .info::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px);
+      width: max-content; max-width: 230px;
+      background: #000; color: #fff; opacity: 0; visibility: hidden;
+      font-size: 0.78rem; font-weight: 500; line-height: 1.45; letter-spacing: 0;
+      text-align: left; padding: 9px 12px; border-radius: 9px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35); pointer-events: none;
+      transition: opacity 0.18s, transform 0.18s; z-index: 50;
+    }
+    .info::before {
+      content: ''; position: absolute; bottom: calc(100% + 3px); left: 50%;
+      transform: translateX(-50%); border: 6px solid transparent; border-top-color: #000;
+      opacity: 0; visibility: hidden; transition: opacity 0.18s; z-index: 51;
+    }
+    .info:hover::after, .info:hover::before,
+    .info.open::after, .info.open::before { opacity: 1; visibility: visible; }
+    .info:hover::after, .info.open::after { transform: translateX(-50%) translateY(0); }
+    /* keep tooltips inside the card edges */
+    .price-features li:first-child .info::after { left: 0; transform: translateX(0) translateY(4px); }
+    .price-features li:first-child .info:hover::after,
+    .price-features li:first-child .info.open::after { transform: translateX(0) translateY(0); }
+
     /* ===== Steps ===== */
     .steps-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 18px; align-items: stretch; }
     @media (max-width: 860px) { .steps-grid { grid-template-columns: 1fr; } .step-arrow { transform: rotate(90deg); margin: -4px auto; } }
@@ -474,7 +523,12 @@
     .price-features li { display: flex; gap: 10px; font-size: 0.9rem; color: var(--color-dark-soft); align-items: flex-start; }
     .price-card.popular .price-features li { color: rgba(255,255,255,0.85); }
     .price-features svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 3px; }
-    .pricing-note { text-align: center; margin-top: 30px; font-size: 0.92rem; color: var(--color-text-muted); }
+    .pricing-punch {
+      text-align: center; margin-top: 36px;
+      font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 800;
+      letter-spacing: -0.02em; color: var(--color-dark);
+    }
+    .pricing-note { text-align: center; margin-top: 14px; font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.7; }
     .pricing-note b { color: var(--color-accent); }
 
     /* ===== FAQ ===== */
@@ -894,7 +948,7 @@
           <ul class="price-features">
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>AI receptionist on your number</li>
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Calendar booking + call summaries</li>
-            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Missed-call text-back</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Missed-call text-back<button class="info" type="button" aria-label="What this means" data-tip="If nobody answers, the caller gets a text from you within seconds so they don't move on.">i</button></li>
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Weekly lead report</li>
           </ul>
           <a href="#demo" class="btn btn-ghost" style="width:100%;">Book a Call</a>
@@ -907,9 +961,10 @@
           <p class="price-desc">Receptionist + reviews. The full front desk, automated.</p>
           <ul class="price-features">
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Standard</li>
-            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Automated review requests</li>
-            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Private feedback routing</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Automated review requests<button class="info" type="button" aria-label="What this means" data-tip="After each visit we text the patient and ask for a Google review. No one has to remember.">i</button></li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Private feedback routing<button class="info" type="button" aria-label="What this means" data-tip="Unhappy patients reach you privately first, instead of posting it on Google.">i</button></li>
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Google review link + monthly review report</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#f07a4f" opacity="0.25"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#f07a4f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Referral requests<button class="info" type="button" aria-label="What this means" data-tip="After someone leaves a 5-star review, we ask them to tell a friend about you.">i</button></li>
           </ul>
           <a href="#demo" class="btn btn-primary" style="width:100%;">Book a Call</a>
         </div>
@@ -920,14 +975,16 @@
           <p class="price-desc">For busy or multi-location practices with 5+ staff.</p>
           <ul class="price-features">
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Plus</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Patient reactivation<button class="info" type="button" aria-label="What this means" data-tip="We text patients who stopped coming and get them booked again. They were already yours.">i</button></li>
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Multi-line / multi-location routing</li>
-            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom call scripts &amp; intake flows</li>
+            <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Custom call scripts &amp; intake flows<button class="info" type="button" aria-label="What this means" data-tip="We write what the AI says and which questions it asks, built around how your office works.">i</button></li>
             <li><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#1f9d55" opacity="0.12"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#1f9d55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Priority support</li>
           </ul>
           <a href="#demo" class="btn btn-ghost" style="width:100%;">Book a Call</a>
         </div>
       </div>
-      <p class="pricing-note reveal">One-time setup from <b>$197</b>, waived for founding clients this quarter. First month <b>50% off</b>. Cancel anytime.</p>
+      <p class="pricing-punch reveal">The best value you will find anywhere in this market.</p>
+      <p class="pricing-note reveal">One-time setup from <b>$197</b>, waived for founding clients this quarter. First month <b>50% off</b>. Cancel anytime.<br>Want a simple booking website too? One page, click to call, from <b>$497</b> setup. Winning back old patients can be added to any plan for <b>$149/mo</b>.</p>
     </div>
   </section>
 
@@ -1047,6 +1104,19 @@
       document.getElementById('m-value').textContent  = fmt(value);
       document.getElementById('m-cost').textContent   = fmt(SERVICE_COST_YR);
     }
+
+    // Info tooltips: hover on desktop, tap on touch devices
+    document.querySelectorAll('.info').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault(); e.stopPropagation();
+        const wasOpen = btn.classList.contains('open');
+        document.querySelectorAll('.info.open').forEach(o => o.classList.remove('open'));
+        if (!wasOpen) btn.classList.add('open');
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.info.open').forEach(o => o.classList.remove('open'));
+    });
 
     [slCalls, slMissed, slValue].forEach(el => el.addEventListener('input', runCalc));
     runCalc();
