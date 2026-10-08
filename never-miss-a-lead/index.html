@@ -232,6 +232,70 @@
       font-size: 0.76rem; font-weight: 800; padding: 8px 14px; border-radius: var(--radius-pill); margin-top: 4px; }
     .phone-caption { text-align: center; margin-top: 18px; font-size: 0.82rem; font-weight: 600; color: var(--color-text-muted); }
 
+    .stats-source { text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 28px; }
+    .stats-source a { color: rgba(255,255,255,0.65); text-decoration: underline; }
+    .stats-source a:hover { color: var(--color-accent-soft); }
+
+    /* ===== Revenue calculator ===== */
+    .calc-card {
+      background: var(--color-card); border: 1px solid var(--color-card-border);
+      border-radius: 28px; box-shadow: var(--shadow-lg); backdrop-filter: blur(8px);
+      padding: 40px; position: relative; overflow: hidden;
+    }
+    .calc-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 44px; align-items: start; }
+    @media (max-width: 860px) { .calc-grid { grid-template-columns: 1fr; gap: 32px; } .calc-card { padding: 28px 22px; } }
+
+    .calc-field { margin-bottom: 30px; }
+    .calc-label { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+    .calc-label > span:first-child { font-size: 0.95rem; font-weight: 700; color: var(--color-dark); }
+    .calc-value { font-size: 1.3rem; font-weight: 800; color: var(--color-accent); letter-spacing: -0.02em; }
+    .calc-range { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-muted); margin-top: 7px; font-weight: 600; }
+
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+      border-radius: var(--radius-pill); background: rgba(0,0,0,0.12); outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%;
+      background: #fff; border: 3px solid var(--color-accent); cursor: grab;
+      box-shadow: 0 2px 10px rgba(232,93,44,0.4); transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.12); }
+    input[type="range"]::-moz-range-thumb {
+      width: 24px; height: 24px; border-radius: 50%; background: #fff;
+      border: 3px solid var(--color-accent); cursor: grab; box-shadow: 0 2px 10px rgba(232,93,44,0.4);
+    }
+    .calc-hint { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px; line-height: 1.5; }
+
+    .calc-result {
+      background: var(--color-dark); border-radius: 22px; padding: 32px 28px; text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+    .calc-result-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+    .calc-big {
+      font-size: clamp(2.4rem, 6vw, 3.4rem); font-weight: 800; letter-spacing: -0.035em;
+      color: #ff7a52; line-height: 1.05; margin: 10px 0 6px;
+    }
+    .calc-math { margin-top: 6px; }
+    .calc-math summary {
+      list-style: none; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+      color: rgba(255,255,255,0.55); text-decoration: underline; text-underline-offset: 3px;
+    }
+    .calc-math summary::-webkit-details-marker { display: none; }
+    .calc-math summary:hover { color: rgba(255,255,255,0.85); }
+    .calc-math-body {
+      margin-top: 14px; padding: 14px 16px; background: rgba(255,255,255,0.06);
+      border-radius: 12px; font-size: 0.82rem; color: rgba(255,255,255,0.8); line-height: 1.75; text-align: left;
+    }
+    .calc-math-body span { color: #ff9f6b; font-weight: 700; }
+    .calc-math-note { margin-top: 10px; font-size: 0.74rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    .calc-divider { height: 1px; background: rgba(255,255,255,0.14); margin: 26px 0 22px; }
+    .calc-recover-label { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+    .calc-recover { font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: #5fd68a; line-height: 1.1; margin: 8px 0 6px; }
+    .calc-recover-note { font-size: 0.78rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+    .calc-foot { font-size: 0.76rem; color: rgba(255,255,255,0.45); margin-top: 12px; }
+
     /* ===== Review growth chart ===== */
     .chart-card {
       background: var(--color-card); border: 1px solid var(--color-card-border);
@@ -485,8 +549,8 @@
     <div class="nav-inner">
       <a href="#" class="logo"><span class="logo-icon">&#9670;</span><span>Never Miss a Lead</span></a>
       <div class="nav-links">
+        <a href="#calculator">Calculator</a>
         <a href="#services">Services</a>
-        <a href="#how">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="#demo" class="nav-cta">Book a Call</a>
       </div>
@@ -587,16 +651,70 @@
       <h2>Your next patient is calling right now.<br><span class="accent">Here's what happens if no one picks up.</span></h2>
       <div class="stats-grid">
         <div>
-          <div class="stat-num">1 in 4</div>
-          <p class="stat-label">calls to small practices rings out with no answer, mostly during busy hours</p>
+          <div class="stat-num">30-38%</div>
+          <p class="stat-label">of calls to dental practices go unanswered during business hours</p>
         </div>
         <div>
-          <div class="stat-num">$1,500+</div>
-          <p class="stat-label">average lifetime value of a single new patient for a dental practice</p>
+          <div class="stat-num">$850+</div>
+          <p class="stat-label">conservative first-year production value of a single new patient</p>
         </div>
         <div>
-          <div class="stat-num">80%</div>
-          <p class="stat-label">of callers who reach a voicemail will simply dial the next practice instead</p>
+          <div class="stat-num">22%</div>
+          <p class="stat-label">of prospective patients are driven away by a single negative review</p>
+        </div>
+      </div>
+      <p class="stats-source">Call and patient-value figures: <a href="https://www.dentaleconomics.com/practice/article/55385634/the-economics-of-missed-calls-quantifying-revenue-loss-in-dental-practices" target="_blank" rel="noopener">Dental Economics</a>, July/August 2026.</p>
+    </div>
+  </section>
+
+  <!-- Revenue calculator -->
+  <section class="section-pad" id="calculator" style="padding-top: 56px;">
+    <div class="container">
+      <span class="kicker reveal">Run your own numbers</span>
+      <h2 class="section-headline reveal">What are your missed calls worth?</h2>
+      <p class="section-subheadline reveal">Move the sliders to match your practice. The math is shown underneath, so you can check it.</p>
+
+      <div class="calc-card reveal">
+        <div class="calc-grid">
+          <div class="calc-inputs">
+            <div class="calc-field">
+              <div class="calc-label"><span>Calls per day</span><span class="calc-value" id="cv-calls">60</span></div>
+              <input type="range" id="sl-calls" min="20" max="200" step="5" value="60" aria-label="Calls per day">
+              <div class="calc-range"><span>20</span><span>200</span></div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label"><span>Calls you miss</span><span class="calc-value" id="cv-missed">30%</span></div>
+              <input type="range" id="sl-missed" min="5" max="50" step="1" value="30" aria-label="Percentage of calls missed">
+              <div class="calc-range"><span>5%</span><span>50%</span></div>
+            </div>
+            <div class="calc-field">
+              <div class="calc-label"><span>New patient value (first year)</span><span class="calc-value" id="cv-value">$850</span></div>
+              <input type="range" id="sl-value" min="300" max="2000" step="50" value="850" aria-label="First year value of a new patient">
+              <div class="calc-range"><span>$300</span><span>$2,000</span></div>
+            </div>
+            <p class="calc-hint">Not sure what you miss? Most practices land between 30% and 38%. We can measure yours for free.</p>
+          </div>
+
+          <div class="calc-result">
+            <p class="calc-result-label">Walking out the door each year</p>
+            <p class="calc-big" id="calc-lost">$0</p>
+            <details class="calc-math">
+              <summary>See how this is calculated</summary>
+              <div class="calc-math-body">
+                <p><span id="m-missed">0</span> missed calls a year<br>
+                &times; 20% that are prospective new patients<br>
+                &times; 35% who would have booked<br>
+                &times; <span id="m-value">$850</span> first-year value</p>
+                <p class="calc-math-note">Deliberately conservative. We assume most missed calls are existing patients who call back, and that only a third of new callers would have booked. Your real numbers are likely higher.</p>
+              </div>
+            </details>
+            <div class="calc-divider"></div>
+            <p class="calc-recover-label">What catching them back looks like</p>
+            <p class="calc-recover" id="calc-recovered">$0</p>
+            <p class="calc-recover-note">at a 50% recovery rate, minus <span id="m-cost">$5,964</span>/yr for the service</p>
+            <a href="#demo" class="btn btn-primary" style="width:100%; margin-top:18px;">Get my real numbers free</a>
+            <p class="calc-foot">We measure your actual missed calls. No sliders, no guessing.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -892,6 +1010,46 @@
       entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); observer.unobserve(en.target); } });
     }, { threshold: 0.12 });
     document.querySelectorAll('.reveal, .js-anim').forEach(el => observer.observe(el));
+
+    // Revenue calculator: missed calls -> lost first-year production
+    // Assumptions are deliberately conservative and shown to the visitor.
+    // Sanity check: a practice does not have thousands of new patients a year, so the
+    // new-patient share applies to CALL VOLUME, and only a fraction of those are first-time callers.
+    const NEW_PATIENT_SHARE = 0.20;   // share of all inbound calls that are prospective new patients
+    const BOOKING_RATE      = 0.35;   // of those reached, how many would actually book
+    const RECOVERY_RATE     = 0.50;   // what an answering layer realistically catches back
+    const SERVICE_COST_YR   = 497 * 12; // Plus tier, the mid package
+
+    const slCalls  = document.getElementById('sl-calls');
+    const slMissed = document.getElementById('sl-missed');
+    const slValue  = document.getElementById('sl-value');
+
+    const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+
+    function runCalc() {
+      const calls  = +slCalls.value;
+      const missed = +slMissed.value / 100;
+      const value  = +slValue.value;
+
+      // 5 working days a week, 52 weeks
+      const missedPerYear = calls * missed * 5 * 52;
+      const lost      = missedPerYear * NEW_PATIENT_SHARE * BOOKING_RATE * value;
+      const recovered = (lost * RECOVERY_RATE) - SERVICE_COST_YR;
+
+      document.getElementById('cv-calls').textContent  = calls;
+      document.getElementById('cv-missed').textContent = slMissed.value + '%';
+      document.getElementById('cv-value').textContent  = fmt(value);
+
+      document.getElementById('calc-lost').textContent      = fmt(lost);
+      document.getElementById('calc-recovered').textContent = recovered > 0 ? fmt(recovered) : fmt(0);
+
+      document.getElementById('m-missed').textContent = Math.round(missedPerYear).toLocaleString('en-US');
+      document.getElementById('m-value').textContent  = fmt(value);
+      document.getElementById('m-cost').textContent   = fmt(SERVICE_COST_YR);
+    }
+
+    [slCalls, slMissed, slValue].forEach(el => el.addEventListener('input', runCalc));
+    runCalc();
 
     // Lead form -> Supabase Waitlist (anon insert-only; publishable key is public by design)
     const SB_URL = "https://hhkpzekbmkozbqtbehef.supabase.co";
