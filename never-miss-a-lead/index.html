@@ -894,8 +894,8 @@
     document.querySelectorAll('.reveal, .js-anim').forEach(el => observer.observe(el));
 
     // Lead form -> Supabase Waitlist (anon insert-only; publishable key is public by design)
-    const SB_URL = "https://rtpouxildqvtkvyvobdv.supabase.co";
-    const SB_KEY = "sb_publishable_Bz_3vLarwZ7KWfARXz_8PA_eEXdJh8l";
+    const SB_URL = "https://hhkpzekbmkozbqtbehef.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhoa3B6ZWtibWtvemJxdGJlaGVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MjI1MDcsImV4cCI6MjA3OTE5ODUwN30.zAmP3xXlpC_P1FO8rUqrZZVDLOfXtGBIYT6N0xknfg8";
     const leadForm = document.getElementById('lead-form');
     const leadMsg = document.getElementById('lf-msg');
     const leadSubmit = document.getElementById('lf-submit');
@@ -918,7 +918,7 @@
       leadSubmit.disabled = true;
       leadSubmit.textContent = 'Booking your call…';
       try {
-        const res = await fetch(`${SB_URL}/rest/v1/Waitlist`, {
+        const res = await fetch(`${SB_URL}/rest/v1/nevermissalead`, {
           method: 'POST',
           headers: {
             apikey: SB_KEY,
@@ -926,11 +926,11 @@
             'Content-Type': 'application/json',
             Prefer: 'return=minimal',
           },
-          // Waitlist column mapping: bookingSystem=practice, segment=phone
           body: JSON.stringify({
+            name: name || null,
+            practice: practice || null,
+            phone: phone || null,
             email,
-            bookingSystem: practice || null,
-            segment: phone || null,
             source: 'never-miss-a-lead',
           }),
         });
